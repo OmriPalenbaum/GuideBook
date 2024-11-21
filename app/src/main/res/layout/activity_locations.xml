@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/locationLayout"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/boulderbg"
     android:orientation="vertical"
     tools:context=".Locations">
+
     <TextView
         android:id="@+id/tvLocations"
         android:layout_width="match_parent"
@@ -14,17 +16,30 @@
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:gravity="center"
+        android:fontFamily="@font/squares"
         android:text="Boulder locations"
         android:textColor="#EDBB61"
-        android:textSize="40sp" />
+        android:textSize="35sp" />
 
     <ListView
         android:id="@+id/lvLocations"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginBottom="100sp"
-        android:layout_marginTop="20sp"/>
+        android:background="@drawable/listbg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="100dp"
+        android:layout_marginTop="20sp">
+    </ListView>
+
+    <Button
+        android:id="@+id/btAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/squares"
+        android:textColor="@color/black"
+        android:backgroundTint="#ECB553"
+        android:text="Add boulder location" />
 
 
 </LinearLayout>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/boulderbg"
+    tools:context=".AddLocation">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20sp"
+        android:gravity="center"
+        android:fontFamily="@font/squares"
+        android:text="Suggest a boulder location"
+        android:textColor="#EDBB61"
+        android:textSize="35sp" />
+
+    <EditText
+        android:id="@+id/etName"
+        android:layout_width="297dp"
+        android:layout_height="50sp"
+        android:layout_gravity="center"
+        android:layout_marginTop="40sp"
+        android:hint="Name of the site"
+        android:inputType="text"
+        android:background="@drawable/textbg" />
+
+    <EditText
+        android:id="@+id/etAddress"
+        android:layout_width="297dp"
+        android:layout_height="50sp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20sp"
+        android:hint="Address of the site"
+        android:inputType="text"
+        android:background="@drawable/textbg" />
+
+    <EditText
+        android:id="@+id/etRating"
+        android:ems="10"
+        android:layout_width="297dp"
+        android:layout_height="50sp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20sp"
+        android:hint="Your rating of the site, out of 5"
+        android:inputType="text"
+        android:background="@drawable/textbg" />
+
+    <ImageView
+        android:id="@+id/ivCamera"
+        android:layout_width="150sp"
+        android:layout_height="150sp"
+        android:layout_gravity="center"
+        android:layout_margin="30sp"
+        android:src="@drawable/empty_camera"
+        />
+
+    <Button
+        android:id="@+id/bt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="30sp"
+        android:fontFamily="@font/squares"
+        android:textColor="@color/black"
+        android:backgroundTint="#ECB553"
+        android:text="Submit suggestion" />
+
+</LinearLayout>

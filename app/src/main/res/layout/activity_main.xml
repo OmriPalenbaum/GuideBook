@@ -33,7 +33,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="200dp"
+        android:fontFamily="@font/squares"
+        android:textColor="@color/black"
+        android:backgroundTint="#ECB553"
         android:text="Boulder locations" />
 
     <Button
@@ -42,6 +45,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
+        android:fontFamily="@font/squares"
+        android:textColor="@color/black"
+        android:backgroundTint="#ECB553"
         android:text="Tips &amp; info" />
+
 
 </LinearLayout>
