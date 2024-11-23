@@ -60,11 +60,6 @@ public class AddLocation extends AppCompatActivity {
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
-//                        Intent data = result.getData();
-//                        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-//                        setCamera.setImageBitmap(bitmap);
-//                        setCamera.setImageBitmap(result.getData().getParcelableExtra("data"));
-
                         if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                             Bitmap bitmap = (Bitmap) result.getData().getExtras().get("data");
                             setCamera.setImageBitmap(bitmap);
@@ -85,7 +80,9 @@ public class AddLocation extends AppCompatActivity {
         btSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //save the boulder to the database
                 saveBoulderData();
+                //showing a TOAST that says the data was submitted
                 CharSequence text = "Data submitted successfully";
                 int duration = Toast.LENGTH_SHORT;
                 Toast.makeText (AddLocation.this, text, duration).show();
@@ -95,17 +92,20 @@ public class AddLocation extends AppCompatActivity {
 
         });
     }
+    //converting Bitmap to Byte array
     private byte[] convertBitmapToByteArray(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         return stream.toByteArray();
     }
 
+    //saving the boulder to the database, with IS_ACTIVE = false
     private void saveBoulderData() {
         String name = etName.getText().toString();
         String address = etAddress.getText().toString();
         String rating = etRating.getText().toString();
 
+        //checking if all of the parameters were inserted
         if (name.isEmpty() || address.isEmpty() || rating.isEmpty() || imageBytes == null) {
             Toast.makeText(this, "Please fill all fields and capture an image", Toast.LENGTH_SHORT).show();
             return;
