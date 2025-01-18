@@ -1,5 +1,6 @@
 package com.example.guidebook;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -27,7 +28,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_NAME + " TEXT, "
             + COLUMN_ADDRESS + " TEXT, "
             + COLUMN_RATING + " TEXT, "
-            + IS_ACTIVE + " TEXT, "
+            + IS_ACTIVE + " INTEGER, "
             + COLUMN_IMAGE + " BLOB"
             + ")";
 
@@ -49,6 +50,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOCATIONS);
             onCreate(db);
         }
+    }
+    // Method to update the 'is_active' status based on the Boulder name
+    public void updateBoulderStatus(String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("IS_ACTIVE",1);
+        db.update(TABLE_LOCATIONS, cv, "name = ?", new String[]{name});
+        db.close();
     }
 
 }

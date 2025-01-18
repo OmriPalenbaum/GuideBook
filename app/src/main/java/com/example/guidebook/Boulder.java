@@ -9,14 +9,14 @@ public class Boulder implements Serializable{
     private String name;
     private String address;
     private String rating;
-    private String isActive;
+    private boolean isActive;
     private byte[] imageBytes;
 
-    public Boulder(String name, String address, String rating, String isActive, byte[] imageBytes) {
+    public Boulder(String name, String address, String rating, int isActive, byte[] imageBytes) {
         this.name = name;
         this.address = address;
         this.rating = rating;
-        this.isActive = isActive;
+        this.isActive = (isActive == 1); //if input for isActive is 1, set to true. else, set to false
         this.imageBytes = imageBytes;
     }
 
@@ -44,11 +44,11 @@ public class Boulder implements Serializable{
         this.rating = rating;
     }
 
-    public String getIsActive() {
+    public boolean getIsActive() {
         return isActive;
     }
 
-    public void setIsActive(String isActive) {
+    public void setIsActive(boolean isActive) {
         this.isActive = isActive;
     }
 

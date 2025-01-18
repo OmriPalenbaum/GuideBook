@@ -8,17 +8,37 @@
     android:background="@drawable/boulderbg"
     tools:context=".AddLocation">
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/imageButton2"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:layout_marginLeft="5sp"
+            android:layout_marginTop="5sp"
+            android:scaleType="fitXY"
+            android:background="@android:color/transparent"
+            android:src="@drawable/arrow_back_24"
+            android:contentDescription="@string/back_button_description"/>
+
     <TextView
         android:id="@+id/tvTitle"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="20sp"
+        android:layout_marginRight="60sp"
+        android:layout_marginBottom="10sp"
         android:gravity="center"
         android:fontFamily="@font/squares"
         android:text="Suggest a boulder location"
         android:textColor="#EDBB61"
         android:textSize="35sp" />
+
+    </LinearLayout>
 
     <EditText
         android:id="@+id/etName"
@@ -48,7 +68,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="20sp"
         android:hint="Your rating of the site, out of 5"
-        android:inputType="text"
+        android:inputType="numberDecimal"
         android:background="@drawable/textbg" />
 
     <ImageView
