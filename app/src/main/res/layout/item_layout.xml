@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="90sp"
+    android:padding="8dp"
+    android:layout_marginBottom="4dp"
+    android:background="@drawable/listbg">
+
+    <ImageView
+        android:id="@+id/itemImage"
+        android:layout_width="70sp"
+        android:layout_height="70sp"
+        android:layout_alignParentStart="true"
+        android:scaleType="fitXY"
+        android:src="@android:color/darker_gray"/>
+
+    <TextView
+        android:id="@+id/itemName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/itemImage"
+        android:layout_marginStart="8dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:maxLines="1"
+        android:ellipsize="end" />
+
+    <TextView
+        android:id="@+id/itemAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/itemImage"
+        android:layout_below="@id/itemName"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="1dp"
+        android:textSize="18sp"
+        android:textColor="#000000"
+        android:maxLines="1"
+        android:ellipsize="end" />
+
+    <TextView
+        android:id="@+id/itemRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/itemImage"
+        android:layout_below="@id/itemAddress"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="1dp"
+        android:textSize="18sp"
+        android:textColor="#000000"
+        android:maxLines="1"
+        android:ellipsize="end" />
+</RelativeLayout>
