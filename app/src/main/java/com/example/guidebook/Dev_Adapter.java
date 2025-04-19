@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
@@ -50,25 +51,43 @@ public class Dev_Adapter extends RecyclerView.Adapter<Dev_Adapter.BoulderViewHol
         } else {
             // Log the issue and set default image
             Log.d("Dev_Adapter", "No image data available for Boulder: " + currentBoulder.getName());
-            holder.imageView.setImageResource(R.drawable.empty_camera); // Default image if BLOB is null
+            holder.imageView.setImageResource(R.drawable.icon_empty_camera); // Default image if BLOB is null
         }
 
-        // Set the click listener on the itemView to set the Boulder Is_Active to true
-        holder.itemView.setOnClickListener(v -> {
-            Boulder boulder = boulderList.get(position);
-            dbHelper = new DatabaseHelper(v.getContext());
-            boulder.setIsActive(true); // Set Is_Active to true
-
-            // Update the boulder's is_active status in the database
-            dbHelper.updateBoulderStatus(boulder.getName());
-
-            // Log the update
-            Log.d("Dev_Adapter", "Boulder " + boulder.getName() + " set to active");
-
-            // shows a toast message
-            Toast.makeText(v.getContext(), boulder.getName() + " is now active", Toast.LENGTH_SHORT).show();
-            this.notifyDataSetChanged();
-        });
+        // Set click listener to show confirmation dialog before updating isActive status
+        holder.itemView.setOnClickListener(v -> showConfirmationDialog(v, position));
+//
+//        // Set the click listener on the itemView to set the Boulder Is_Active to true
+//        holder.itemView.setOnClickListener(v -> {
+//            Boulder boulder = boulderList.get(position);
+//            dbHelper = new DatabaseHelper(v.getContext());
+//
+//            //check if the boulder is active or not
+//            if (boulder.getIsActive()){
+//                boulder.setIsActive(false); // Set Is_Active to false
+//                // Update the boulder's is_active status in the database
+//                dbHelper.updateBoulderStatus0(boulder.getName());
+//
+//                // Log the update
+//                Log.d("Dev_Adapter", "Boulder " + boulder.getName() + " set to inActive");
+//
+//                // shows a toast message
+//                Toast.makeText(v.getContext(), boulder.getName() + " is now inActive", Toast.LENGTH_SHORT).show();
+//                this.notifyDataSetChanged();
+//            }
+//            else {
+//                boulder.setIsActive(true); // Set Is_Active to true
+//                // Update the boulder's is_active status in the database
+//                dbHelper.updateBoulderStatus1(boulder.getName());
+//
+//                // Log the update
+//                Log.d("Dev_Adapter", "Boulder " + boulder.getName() + " set to active");
+//
+//                // shows a toast message
+//                Toast.makeText(v.getContext(), boulder.getName() + " is now active", Toast.LENGTH_SHORT).show();
+//                this.notifyDataSetChanged();
+//            }
+//        });
     }
 
     @Override
@@ -94,4 +113,33 @@ public class Dev_Adapter extends RecyclerView.Adapter<Dev_Adapter.BoulderViewHol
         void onItemClick(Boulder boulder, int position);
 
     }
+    private void showConfirmationDialog(View view, int position) {
+        Boulder boulder = boulderList.get(position);
+        dbHelper = new DatabaseHelper(view.getContext());
+
+        new AlertDialog.Builder(view.getContext())
+                .setTitle("Confirm Action")
+                .setMessage("Are you sure you want to " + (boulder.getIsActive() ? "deactivate" : "activate") + " " + boulder.getName() + "?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    // Toggle isActive status
+                    boolean newStatus = !boulder.getIsActive();
+                    boulder.setIsActive(newStatus);
+
+                    // Update database
+                    if (newStatus) {
+                        dbHelper.updateBoulderStatus1(boulder.getName());
+                        Log.d("Dev_Adapter", "Boulder " + boulder.getName() + " set to active");
+                        Toast.makeText(view.getContext(), boulder.getName() + " is now active", Toast.LENGTH_SHORT).show();
+                    } else {
+                        dbHelper.updateBoulderStatus0(boulder.getName());
+                        Log.d("Dev_Adapter", "Boulder " + boulder.getName() + " set to inActive");
+                        Toast.makeText(view.getContext(), boulder.getName() + " is now inActive", Toast.LENGTH_SHORT).show();
+                    }
+
+                    notifyDataSetChanged();
+                })
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
 }
+

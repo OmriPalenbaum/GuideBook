@@ -155,9 +155,48 @@ public class AddLocation extends AppCompatActivity {
         String address = etAddress.getText().toString();
         String rating = etRating.getText().toString();
 
-        // Check if all fields are filled
-        if (name.isEmpty() || address.isEmpty() || rating.isEmpty() || imageBytes == null) {
-            Toast.makeText(this, "Please fill all fields and capture/select an image", Toast.LENGTH_SHORT).show();
+
+        boolean hasError = false;
+
+        // Validate name
+        if (name.isEmpty()) {
+            etName.setError("Name is required");
+            hasError = true;
+        } else {
+            etName.setError(null);
+        }
+
+        // Validate address
+        if (address.isEmpty()) {
+            etAddress.setError("Address is required");
+            hasError = true;
+        } else {
+            etAddress.setError(null);
+        }
+
+        // Validate rating
+        double ratingValue = -1;
+        try {
+            ratingValue = Double.parseDouble(rating);
+            if (ratingValue < 0 || ratingValue > 5) {
+                etRating.setError("Rating must be between 0 and 5");
+                hasError = true;
+            } else {
+                etRating.setError(null);
+            }
+        } catch (NumberFormatException e) {
+            etRating.setError("Invalid rating format");
+            hasError = true;
+        }
+
+        if (hasError) {
+            Toast.makeText(this, "Please correct the errors", Toast.LENGTH_SHORT).show();
+            return -1;
+        }
+
+        // Check if the picture was captured
+        if (imageBytes == null) {
+            Toast.makeText(this, "Please capture or select an image", Toast.LENGTH_SHORT).show();
             return -1;
         }
 

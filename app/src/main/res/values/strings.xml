@@ -2,6 +2,9 @@
     <string name="app_name">GuideBook</string>
     <string name="back_button_description">BackButton</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_maps">MapsActivity</string>
+
+    <string-array name="sort_options">
+        <item>Sort by Name</item>
+        <item>Sort by Rating</item>
+    </string-array>
 </resources>

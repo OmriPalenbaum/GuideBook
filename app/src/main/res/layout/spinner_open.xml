@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/layout/spinner_dropdown_item.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical">
+
+    <!-- Text view for the item name -->
+    <TextView
+        android:id="@+id/spinnerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:textSize="16sp"
+        android:textColor="#000000"
+        android:fontFamily="@font/squares" />
+
+    <ImageView
+        android:id="@+id/spinnerArrow"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/icon_a_to_z" /> <!-- Icon for the dropdown item -->
+</LinearLayout>
+

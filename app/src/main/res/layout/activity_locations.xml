@@ -1,67 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/locationLayout"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/boulderbg"
+    android:background="@drawable/background_boulder"
     android:orientation="vertical"
+    android:padding="16dp"
     tools:context=".Locations">
 
+    <!-- Header: Back button and Title -->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="20dp"
+        android:paddingEnd="38dp">
 
+        <!-- Back Button -->
         <ImageButton
             android:id="@+id/imageButton1"
             android:layout_width="50sp"
             android:layout_height="50sp"
-            android:layout_marginLeft="5sp"
-            android:layout_marginTop="5sp"
             android:scaleType="fitXY"
             android:background="@android:color/transparent"
-            android:src="@drawable/arrow_back_24"
+            android:src="@drawable/icon_arrow_back"
             android:contentDescription="@string/back_button_description"/>
 
+        <!-- Title with Gravity centered -->
         <TextView
             android:id="@+id/tvLocations"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="20sp"
-            android:layout_marginRight="60sp"
-            android:layout_marginBottom="10sp"
             android:gravity="center"
+            android:layout_weight="1"
             android:fontFamily="@font/squares"
             android:text="Boulder locations"
             android:textColor="#EDBB61"
-            android:textSize="35sp" />
+            android:textSize="35sp"
+            android:textStyle="bold"/>
 
     </LinearLayout>
 
+
+    <!-- Add Boulder Button (Smaller width) -->
     <Button
         android:id="@+id/btAdd"
-        android:layout_width="170dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginTop="14dp"
         android:fontFamily="@font/squares"
-        android:textColor="@color/black"
+        android:text="Add boulder location"
+        android:textColor="@android:color/black"
         android:backgroundTint="#ECB553"
-        android:text="Add boulder location" />
+        android:layout_gravity="center"
+        android:textSize="16sp"
+        android:paddingVertical="12dp"/>
 
+    <!-- Sorting Spinner (Small and in top-left corner) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:gravity="start">
+
+        <Spinner
+            android:id="@+id/spinnerSort"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:backgroundTint="#ECB553"
+            android:popupBackground="#ECB553"
+            android:entries="@array/sort_options"
+            android:spinnerMode="dropdown"
+            android:background="@drawable/spinner_background"
+            android:fontFamily="@font/squares"
+            android:textColor="#000000"/>
+    </LinearLayout>
+
+
+    <!-- RecyclerView for Boulder List -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10sp"
-        android:maxHeight="300sp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_weight="1"
         android:padding="8dp"
-        tools:listitem="@layout/item_layout" >
-    </androidx.recyclerview.widget.RecyclerView>
+        android:maxHeight="300sp"
+        android:clipToPadding="false"
+        android:elevation="4dp"
+        tools:listitem="@layout/item_layout"/>
 
+    <!-- Hidden Fragment Container (For future usage) -->
     <FrameLayout
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"

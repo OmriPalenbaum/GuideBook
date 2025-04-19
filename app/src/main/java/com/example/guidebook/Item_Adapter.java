@@ -3,15 +3,18 @@ package com.example.guidebook;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
+
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
@@ -53,7 +56,7 @@ public class Item_Adapter extends RecyclerView.Adapter<Item_Adapter.BoulderViewH
         } else {
             // Log the issue and set default image
             Log.d("Item_Adapter", "No image data available for Boulder: " + currentBoulder.getName());
-            holder.imageView.setImageResource(R.drawable.empty_camera); // Default image if BLOB is null
+            holder.imageView.setImageResource(R.drawable.icon_empty_camera); // Default image if BLOB is null
         }
 
         // Set the click listener on the itemView

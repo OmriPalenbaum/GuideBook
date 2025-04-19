@@ -4,7 +4,7 @@ import android.net.Uri;
 
 import java.io.Serializable;
 import java.sql.Blob;
-
+//holds boulder data
 public class Boulder implements Serializable{
     private String name;
     private String address;

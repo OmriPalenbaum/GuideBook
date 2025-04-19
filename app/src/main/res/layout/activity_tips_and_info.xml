@@ -5,19 +5,120 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/boulderbg"
+    android:padding="16dp"
+    android:background="@drawable/background_boulder"
     tools:context=".TipsAndInfo">
 
-    <TextView
-        android:id="@+id/tvLocations"
+    <!-- Header: Back button and Title -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:fontFamily="@font/squares"
-        android:gravity="center"
-        android:text="Tips &amp; Info"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="20dp"
+        android:paddingEnd="38dp">
+
+        <!-- Back Button -->
+        <ImageButton
+            android:id="@+id/imageButtonBack"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:scaleType="fitXY"
+            android:background="@android:color/transparent"
+            android:src="@drawable/icon_arrow_back"
+            android:contentDescription="@string/back_button_description"/>
+
+        <!-- Title with Gravity centered -->
+        <TextView
+            android:id="@+id/tvTipsAndInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:fontFamily="@font/squares"
+            android:text="Tips &amp; Info"
+            android:textColor="#EDBB61"
+            android:textSize="35sp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+    <!-- What to Bring Section -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="What to Bring:"
         android:textColor="#EDBB61"
-        android:textSize="35sp" />
+        android:textSize="20sp"
+        android:fontFamily="@font/squares"
+        android:textStyle="bold" />
+
+    <TextView
+        android:padding="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="• Climbing shoes\n• Chalk bag\n• Crash pad\n• Comfortable clothing\n• Water and snacks\n• First aid kit"
+        android:textColor="#EDBB61"
+        android:textSize="16sp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/background_text"
+        android:fontFamily="@font/montserrat" />
+
+    <!-- How to Prepare Section -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="How to Prepare:"
+        android:textColor="#EDBB61"
+        android:textSize="20sp"
+        android:fontFamily="@font/squares"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="• Warm up properly before starting\n• Know your limits and avoid risky moves\n• Choose problems that match your skill level\n• Bring a spotter for safety\n• Learn basic climbing techniques"
+        android:textColor="#EDBB61"
+        android:textSize="16sp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/background_text"
+        android:padding="8dp"
+        android:fontFamily="@font/montserrat" />
+
+    <!-- What to Expect Section -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="What to Expect:"
+        android:textColor="#EDBB61"
+        android:textSize="20sp"
+        android:fontFamily="@font/squares"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="• Bouldering can be tough on your body, so expect some soreness\n• The outdoors can be unpredictable—weather can change quickly\n• Expect a lot of trial and error while finding your rhythm\n• There will be moments of frustration, but keep pushing through!"
+        android:textColor="#EDBB61"
+        android:textSize="16sp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/background_text"
+        android:padding="8dp"
+        android:fontFamily="@font/montserrat" />
 
 </LinearLayout>

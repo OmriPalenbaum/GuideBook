@@ -5,60 +5,65 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/boulderbg"
+    android:background="@drawable/background_boulder"
+    android:padding="16dp"
     tools:context=".AddLocation">
 
+    <!-- Header: Back button and Title -->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="20dp"
+        android:paddingEnd="38dp">
 
+        <!-- Back Button -->
         <ImageButton
             android:id="@+id/imageButton2"
             android:layout_width="50sp"
             android:layout_height="50sp"
-            android:layout_marginLeft="5sp"
-            android:layout_marginTop="5sp"
             android:scaleType="fitXY"
             android:background="@android:color/transparent"
-            android:src="@drawable/arrow_back_24"
+            android:src="@drawable/icon_arrow_back"
             android:contentDescription="@string/back_button_description"/>
 
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20sp"
-        android:layout_marginRight="60sp"
-        android:layout_marginBottom="10sp"
-        android:gravity="center"
-        android:fontFamily="@font/squares"
-        android:text="Suggest a boulder location"
-        android:textColor="#EDBB61"
-        android:textSize="35sp" />
-
+        <!-- Title with Gravity centered -->
+        <TextView
+            android:id="@+id/tvLocations"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:fontFamily="@font/squares"
+            android:text="Suggest a location"
+            android:textColor="#EDBB61"
+            android:textSize="35sp"
+            android:textStyle="bold"/>
     </LinearLayout>
 
+    <!-- EditText Fields -->
     <EditText
         android:id="@+id/etName"
         android:layout_width="297dp"
         android:layout_height="50sp"
         android:layout_gravity="center"
-        android:layout_marginTop="40sp"
+        android:padding="10dp"
+        android:layout_marginTop="0sp"
         android:hint="Name of the site"
         android:inputType="text"
-        android:background="@drawable/textbg" />
+        android:background="@drawable/background_text" />
 
     <EditText
         android:id="@+id/etAddress"
         android:layout_width="297dp"
         android:layout_height="50sp"
         android:layout_gravity="center"
+        android:padding="10dp"
         android:layout_marginTop="20sp"
-        android:hint="Address of the site"
+        android:hint="Address/name of the nearby city"
         android:inputType="text"
-        android:background="@drawable/textbg" />
+        android:background="@drawable/background_text" />
 
     <EditText
         android:id="@+id/etRating"
@@ -66,26 +71,29 @@
         android:layout_width="297dp"
         android:layout_height="50sp"
         android:layout_gravity="center"
+        android:padding="10dp"
         android:layout_marginTop="20sp"
         android:hint="Your rating of the site, out of 5"
         android:inputType="numberDecimal"
-        android:background="@drawable/textbg" />
+        android:background="@drawable/background_text" />
 
+    <!-- Camera Icon -->
     <ImageView
         android:id="@+id/ivCamera"
         android:layout_width="150sp"
         android:layout_height="150sp"
         android:layout_gravity="center"
         android:layout_margin="30sp"
-        android:src="@drawable/empty_camera"
+        android:src="@drawable/icon_empty_camera"
         />
 
+    <!-- Submit Button -->
     <Button
         android:id="@+id/bt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="30sp"
+        android:layout_marginTop="120sp"
         android:fontFamily="@font/squares"
         android:textColor="@color/black"
         android:backgroundTint="#ECB553"

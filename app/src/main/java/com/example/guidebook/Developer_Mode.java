@@ -15,14 +15,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class Developer_Mode extends AppCompatActivity {
     ImageButton ibBack;
+    TextView tvInActive;
     Dev_Adapter adapter;
-    RecyclerView recyclerView;
+    Dev_Adapter adapter2;
+    RecyclerView recyclerViewInActive;
+    RecyclerView recyclerViewActive;
     DatabaseHelper dbHelper = new DatabaseHelper(this);
     SQLiteDatabase db;
 
@@ -69,9 +73,12 @@ public class Developer_Mode extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_developer_mode);
 
-        ibBack = findViewById(R.id.imageButtonBack);
-        recyclerView = findViewById(R.id.recyclerViewDev);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        ibBack = findViewById(R.id.imageButton1);
+        tvInActive = findViewById(R.id.textView);
+        recyclerViewInActive = findViewById(R.id.recyclerViewInActive);
+        recyclerViewInActive.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewActive = findViewById(R.id.recyclerViewActive);
+        recyclerViewActive.setLayoutManager(new LinearLayoutManager(this));
 
         //creates a list of all the boulders
         final ArrayList<Boulder> boulderList = getAllRecords();
@@ -82,6 +89,16 @@ public class Developer_Mode extends AppCompatActivity {
                 inActiveBoulders.add(item);
             }
         }
+        if (inActiveBoulders.isEmpty()){
+            tvInActive.setVisibility(View.GONE);
+        }
+        //creates a list of all the active boulders
+        ArrayList<Boulder> activeBoulders = new ArrayList<>();
+        for (Boulder item: boulderList){
+            if (item.getIsActive()){
+                activeBoulders.add(item);
+            }
+        }
         //sends the data to the recycler view adapter
         adapter = new Dev_Adapter(inActiveBoulders, new Dev_Adapter.OnItemClickListener() {
             @Override
@@ -89,7 +106,17 @@ public class Developer_Mode extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         });
-        recyclerView.setAdapter(adapter);
+        recyclerViewInActive.setAdapter(adapter);
+
+        //sends the data to the recycler view adapter
+        adapter2 = new Dev_Adapter(activeBoulders, new Dev_Adapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Boulder boulder, int position) {
+                adapter.notifyDataSetChanged();
+            }
+        });
+        recyclerViewActive.setAdapter(adapter2);
+
         // sets listener for the image button
         ibBack.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -4,51 +4,128 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:gravity="center_horizontal">
+    android:background="@drawable/background_list">
 
-    <TextView
-        android:id="@+id/textViewName"
-        android:layout_width="wrap_content"
+    <!-- Header Row: Back Button + Boulder Name -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Boulder Name"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:gravity="center"
-        android:layout_marginBottom="8dp" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
 
+        <ImageButton
+            android:id="@+id/buttonBack"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/icon_special_x"
+            android:contentDescription="Close"
+            android:scaleType="fitXY"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/textViewName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_marginEnd="60dp"
+            android:layout_weight="1"
+            android:text="Boulder Name"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+
+    <!-- Boulder Address -->
     <TextView
         android:id="@+id/textViewAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="Address: Placeholder Address"
-        android:textSize="16sp"
         android:textColor="@color/black"
-        android:layout_marginBottom="4dp" />
+        android:textSize="16sp"
+        android:layout_marginBottom="4dp"
+        android:layout_gravity="center_horizontal" />
 
+    <!-- Boulder Rating -->
     <TextView
         android:id="@+id/textViewRating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="Rating: 5.0"
-        android:textSize="16sp"
         android:textColor="@color/black"
-        android:layout_marginBottom="12dp" />
+        android:textSize="16sp"
+        android:layout_marginBottom="8dp"
+        android:layout_gravity="center_horizontal" />
 
+    <!-- Weather Information -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical|center"
+        android:layout_marginBottom="8dp">
+
+        <!-- Weather Temperature and Description -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/textViewWeather1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="0C°"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/textViewWeather2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <!-- Weather Icon -->
+        <ImageView
+            android:id="@+id/imageViewWeather"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/icon_na_weather"
+            android:layout_marginStart="16dp" />
+    </LinearLayout>
+
+    <!-- Navigation Button -->
+    <ImageButton
+        android:id="@+id/imageButtonNav"
+        android:background="@android:color/transparent"
+        android:scaleType="fitXY"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/icon_map"
+        android:contentDescription="navigate to boulder"
+        android:layout_marginBottom="12dp"
+        android:layout_gravity="center_horizontal" />
+
+    <!-- Boulder Image -->
     <ImageView
         android:id="@+id/imageViewBoulder"
         android:layout_width="match_parent"
         android:layout_height="180dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/no_image_icon"
+        android:src="@drawable/icon_no_image"
         android:layout_marginBottom="12dp" />
 
-    <Button
-        android:id="@+id/buttonBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Back"
-        android:textSize="16sp"
-        android:backgroundTint="#ECB553"
-        android:textColor="@android:color/black" />
 </LinearLayout>

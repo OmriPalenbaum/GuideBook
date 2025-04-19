@@ -51,11 +51,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             onCreate(db);
         }
     }
-    // Method to update the 'is_active' status based on the Boulder name
-    public void updateBoulderStatus(String name){
+    // Method to update the 'is_active' to true(1) based on the Boulder name
+    public void updateBoulderStatus1(String name){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("IS_ACTIVE",1);
+        db.update(TABLE_LOCATIONS, cv, "name = ?", new String[]{name});
+        db.close();
+    }
+    // Method to update the 'is_active' to false(0) based on the Boulder name
+    public void updateBoulderStatus0(String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("IS_ACTIVE",0);
         db.update(TABLE_LOCATIONS, cv, "name = ?", new String[]{name});
         db.close();
     }

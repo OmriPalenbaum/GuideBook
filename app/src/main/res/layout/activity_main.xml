@@ -5,11 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/boulderbg"
+    android:background="@drawable/background_boulder"
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -21,12 +20,11 @@
         android:fontFamily="@font/montague" />
 
     <ImageView
-        android:id="@+id/logo2"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_gravity="center"
         android:layout_marginTop="15dp"
-        android:src="@drawable/ilcclogo1" />
+        android:src="@drawable/icon_ilcc" />
 
     <Button
         android:id="@+id/btLocations"

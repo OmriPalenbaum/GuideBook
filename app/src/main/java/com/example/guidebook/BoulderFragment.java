@@ -1,8 +1,9 @@
 package com.example.guidebook;
 
-import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,11 +17,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class BoulderFragment extends Fragment {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
+public class BoulderFragment extends Fragment{
+
+    private static final String APIKEY = "20deb2d30fc03075f6b90c285858e376";
+    private static final String UNITS = "metric";
     private String name;
     private String address;
     private String rating;
@@ -61,8 +70,12 @@ public class BoulderFragment extends Fragment {
         TextView textViewName = view.findViewById(R.id.textViewName);
         TextView textViewAddress = view.findViewById(R.id.textViewAddress);
         TextView textViewRating = view.findViewById(R.id.textViewRating);
+        ImageButton imageButtonNav = view.findViewById(R.id.imageButtonNav);
+        TextView textViewWeather1 = view.findViewById(R.id.textViewWeather1);
+        TextView textViewWeather2 = view.findViewById(R.id.textViewWeather2);
+        ImageView imageViewWeather = view.findViewById(R.id.imageViewWeather);
         ImageView imageViewBoulder = view.findViewById(R.id.imageViewBoulder);
-        Button buttonBack = view.findViewById(R.id.buttonBack);
+        ImageButton buttonBack = view.findViewById(R.id.buttonBack);
 
         textViewName.setText(name);
         textViewAddress.setText("Address: " + address);
@@ -73,8 +86,46 @@ public class BoulderFragment extends Fragment {
             Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
             imageViewBoulder.setImageBitmap(bitmap);
         } else {
-            imageViewBoulder.setImageResource(R.drawable.no_image_icon); // Fallback image
+            imageViewBoulder.setImageResource(R.drawable.icon_no_image); // Fallback image
         }
+
+        imageButtonNav.setOnClickListener(v -> openGoogleMapsNavigation(address));
+
+        // Create an instance of the WeatherApiService
+        WeatherApiService weatherApi = RetrofitClient.getClient().create(WeatherApiService.class);
+        // Call the getWeather method to fetch weather data
+        weatherApi.getWeather(address, APIKEY, UNITS).enqueue(new Callback<WeatherResponse>() {
+            @Override
+            public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
+                // Check if the response is successful and contains data
+                if (response.isSuccessful() && response.body() != null) {
+                    // Extract the weather data from the response
+                    WeatherResponse weather = response.body();
+
+                    String weatherInfo = "Temperature: " + weather.getMain().getTemp() + "°C";
+                    textViewWeather1.setText(weatherInfo);
+
+                    weatherInfo =  "Humidity: " + weather.getMain().getHumidity() + "%\n" +
+                            "Description: " + weather.getWeather().get(0).getDescription();
+                    textViewWeather2.setText(weatherInfo);
+
+                    // Set the weather image to clear skies by default. If the temperature is less than 15°C, change the weather image to rainy
+                    imageViewWeather.setImageResource( R.drawable.icon_clear_skies);
+                    if (weather.getMain().getTemp() < 15) {
+                        imageViewWeather.setImageResource( R.drawable.icon_rainy);
+                    }
+                } else {
+                    // If the response is not successful or contains no data, display an error message in textViewWeather1
+
+                    textViewWeather1.setText("Error: Unable to fetch weather data.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<WeatherResponse> call, Throwable t) {
+                textViewWeather1.setText("Error: " + t.getMessage());
+            }
+        });
 
         buttonBack.setOnClickListener(v -> {
             // Get the RecyclerView reference from the parent activity
@@ -97,5 +148,21 @@ public class BoulderFragment extends Fragment {
             }
         });
         return view;
+    }
+    private void openGoogleMapsNavigation(String locationAddress) {
+        // Encode the location name and Creates a URI for Google Maps navigation using the encoded destination
+        String destination = Uri.encode(locationAddress + " עיר, Israel");
+        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + destination);
+
+        // Create an intent to open Google Maps with the navigation URI
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+
+        // Check if Google Maps is installed. if it is, start navigation, otherwise show an error message
+        if (mapIntent.resolveActivity(requireActivity().getPackageManager()) != null) {
+            startActivity(mapIntent);
+        } else {
+            Toast.makeText(getContext(), "Google Maps app not installed!", Toast.LENGTH_SHORT).show();
+        }
     }
 }
