@@ -1,11 +1,14 @@
 package com.example.guidebook;
 
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,8 +55,8 @@ public class Dev_Adapter extends RecyclerView.Adapter<Dev_Adapter.BoulderViewHol
             holder.imageView.setImageResource(R.drawable.icon_empty_camera); // Default image if BLOB is null
         }
 
-        // Set click listener to show confirmation dialog before updating isActive status
-        holder.itemView.setOnClickListener(v -> showConfirmationDialog(v, position));
+        // Set click listener to show options dialog
+        holder.itemView.setOnClickListener(v -> showOptionsDialog(v, position));
     }
 
     @Override
@@ -75,9 +78,105 @@ public class Dev_Adapter extends RecyclerView.Adapter<Dev_Adapter.BoulderViewHol
         }
     }
 
-    private void showConfirmationDialog(View view, int position) {
+    private void showOptionsDialog(View view, int position) {
         Boulder boulder = boulderList.get(position);
         dbHelper = new DatabaseHelper(view.getContext());
+
+        CharSequence[] options = {"Edit Boulder Details", "Activate/Deactivate Boulder"};
+
+        new AlertDialog.Builder(view.getContext())
+                .setTitle("Choose Action")
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        // Edit Boulder Details
+                        showEditOptionsDialog(view, position);
+                    } else {
+                        // Activate/Deactivate (old functionality)
+                        showConfirmationDialog(view, position);
+                    }
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private void showEditOptionsDialog(View view, int position) {
+        Boulder boulder = boulderList.get(position);
+        CharSequence[] editOptions = {"Edit Name", "Edit Address", "Edit Rating"};
+
+        new AlertDialog.Builder(view.getContext())
+                .setTitle("Edit " + boulder.getName())
+                .setItems(editOptions, (dialog, which) -> {
+                    // Handle edit option selection
+                    switch (which) {
+                        case 0: // Edit Name
+                            showEditDialog(view, position, "name", boulder.getName());
+                            break;
+                        case 1: // Edit Address
+                            showEditDialog(view, position, "address", boulder.getAddress());
+                            break;
+                        case 2: // Edit Rating
+                            showEditDialog(view, position, "rating", boulder.getRating());
+                            break;
+                    }
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private void showEditDialog(View view, int position, String field, String currentValue) {
+        Boulder boulder = boulderList.get(position);
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+        builder.setTitle("Edit " + field.substring(0, 1).toUpperCase() + field.substring(1));
+
+        // Set up the input
+        final EditText input = new EditText(view.getContext());
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setText(currentValue);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("Save", (dialog, which) -> {
+            String newValue = input.getText().toString().trim();
+            if (!newValue.isEmpty()) {
+                updateBoulderField(view, boulder, field, newValue, position);
+            } else {
+                Toast.makeText(view.getContext(), field + " cannot be empty", Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        builder.show();
+    }
+
+    private void updateBoulderField(View view, Boulder boulder, String field, String newValue, int position) {
+        switch (field) {
+            case "name":
+                String oldName = boulder.getName();
+                boulder.setName(newValue);
+                dbHelper.updateBoulderName(oldName, newValue);
+                Log.d("Dev_Adapter", "Boulder name changed from " + oldName + " to " + newValue);
+                break;
+            case "address":
+                boulder.setAddress(newValue);
+                dbHelper.updateBoulderAddress(boulder.getName(), newValue);
+                Log.d("Dev_Adapter", "Boulder address updated for " + boulder.getName());
+                break;
+            case "rating":
+                boulder.setRating(newValue);
+                dbHelper.updateBoulderRating(boulder.getName(), newValue);
+                Log.d("Dev_Adapter", "Boulder rating updated for " + boulder.getName());
+                break;
+        }
+
+        Toast.makeText(view.getContext(),
+                field.substring(0, 1).toUpperCase() + field.substring(1) + " updated successfully",
+                Toast.LENGTH_SHORT).show();
+
+        notifyItemChanged(position);
+    }
+
+    private void showConfirmationDialog(View view, int position) {
+        Boulder boulder = boulderList.get(position);
 
         new AlertDialog.Builder(view.getContext())
                 .setTitle("Confirm Action")
@@ -98,10 +197,9 @@ public class Dev_Adapter extends RecyclerView.Adapter<Dev_Adapter.BoulderViewHol
                         Toast.makeText(view.getContext(), boulder.getName() + " is now inActive", Toast.LENGTH_SHORT).show();
                     }
 
-                    this.notifyDataSetChanged();
+                    notifyItemChanged(position);
                 })
-        .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
-        .show();
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .show();
     }
 }
-

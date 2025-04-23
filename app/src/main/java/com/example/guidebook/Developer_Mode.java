@@ -1,22 +1,16 @@
 package com.example.guidebook;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -27,7 +21,7 @@ public class Developer_Mode extends AppCompatActivity {
     Dev_Adapter adapter2;
     RecyclerView recyclerViewInActive;
     RecyclerView recyclerViewActive;
-    DatabaseHelper dbHelper = new DatabaseHelper(this);
+    DatabaseHelper dbHelper;
     SQLiteDatabase db;
 
     //method to retrieve all data from the database
@@ -68,10 +62,13 @@ public class Developer_Mode extends AppCompatActivity {
         db.close();
         return list;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_developer_mode);
+
+        dbHelper = new DatabaseHelper(this);
 
         ibBack = findViewById(R.id.imageButton1);
         tvInActive = findViewById(R.id.textView);
@@ -80,48 +77,57 @@ public class Developer_Mode extends AppCompatActivity {
         recyclerViewActive = findViewById(R.id.recyclerViewActive);
         recyclerViewActive.setLayoutManager(new LinearLayoutManager(this));
 
-        //creates a list of all the boulders
-        final ArrayList<Boulder> boulderList = getAllRecords();
-        //creates a list of all the NOT active boulders
-        ArrayList<Boulder> inActiveBoulders = new ArrayList<>();
-        for (Boulder item: boulderList){
-            if (!item.getIsActive()){
-                inActiveBoulders.add(item);
-            }
-        }
-        if (inActiveBoulders.isEmpty()){
-            tvInActive.setVisibility(View.GONE);
-        }
-        //creates a list of all the active boulders
-        ArrayList<Boulder> activeBoulders = new ArrayList<>();
-        for (Boulder item: boulderList){
-            if (item.getIsActive()){
-                activeBoulders.add(item);
-            }
-        }
-        //sends the data to the recycler view adapter
-        adapter = new Dev_Adapter(inActiveBoulders) {
-            public void onItemClick(Boulder boulder, int position) {
-                adapter.notifyDataSetChanged();
-            }
-        };
-        recyclerViewInActive.setAdapter(adapter);
-
-        //sends the data to the recycler view adapter
-        adapter2 = new Dev_Adapter(activeBoulders) {
-            public void onItemClick(Boulder boulder, int position) {
-                adapter.notifyDataSetChanged();
-            }
-        };
-        recyclerViewActive.setAdapter(adapter2);
+        loadRecyclerViews();
 
         // sets listener for the image button
         ibBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent  = new Intent(Developer_Mode.this, Locations.class);
+                Intent intent = new Intent(Developer_Mode.this, Locations.class);
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh data when coming back to this activity
+        loadRecyclerViews();
+    }
+
+    private void loadRecyclerViews() {
+        //creates a list of all the boulders
+        final ArrayList<Boulder> boulderList = getAllRecords();
+
+        //creates a list of all the NOT active boulders
+        ArrayList<Boulder> inActiveBoulders = new ArrayList<>();
+        for (Boulder item : boulderList) {
+            if (!item.getIsActive()) {
+                inActiveBoulders.add(item);
+            }
+        }
+
+        if (inActiveBoulders.isEmpty()) {
+            tvInActive.setVisibility(View.GONE);
+        } else {
+            tvInActive.setVisibility(View.VISIBLE);
+        }
+
+        //creates a list of all the active boulders
+        ArrayList<Boulder> activeBoulders = new ArrayList<>();
+        for (Boulder item : boulderList) {
+            if (item.getIsActive()) {
+                activeBoulders.add(item);
+            }
+        }
+
+        //sends the data to the recycler view adapter
+        adapter = new Dev_Adapter(inActiveBoulders);
+        recyclerViewInActive.setAdapter(adapter);
+
+        //sends the data to the recycler view adapter
+        adapter2 = new Dev_Adapter(activeBoulders);
+        recyclerViewActive.setAdapter(adapter2);
     }
 }
