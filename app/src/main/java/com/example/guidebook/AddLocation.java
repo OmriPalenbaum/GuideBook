@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -31,6 +32,7 @@ public class AddLocation extends AppCompatActivity {
     EditText etRating;
     ImageView setCamera;
     ImageButton ibBack2;
+    Switch switchIsDone;
     Button btSubmit;
     Boulder newBoulder;
     ActivityResultLauncher<Intent> arCamera;
@@ -48,12 +50,8 @@ public class AddLocation extends AppCompatActivity {
         etAddress = findViewById(R.id.etAddress);
         etRating = findViewById(R.id.etRating);
         setCamera = findViewById(R.id.ivCamera);
+        switchIsDone = findViewById(R.id.switchIsDone);
         btSubmit = findViewById(R.id.bt);
-
-        ActivityCompat.requestPermissions(this,
-                new String[]{android.Manifest.permission.CAMERA,
-                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                1);
 
         // Register for Camera Result
         arCamera = registerForActivityResult(
@@ -155,7 +153,6 @@ public class AddLocation extends AppCompatActivity {
         String address = etAddress.getText().toString();
         String rating = etRating.getText().toString();
 
-
         boolean hasError = false;
 
         // Validate name
@@ -200,8 +197,12 @@ public class AddLocation extends AppCompatActivity {
             return -1;
         }
 
+        boolean isDone = switchIsDone.isChecked();
+        int intIsDone = 0;
+        if (isDone) {intIsDone = 1;}
+
         // Create the Boulder object
-        newBoulder = new Boulder(name, address, rating + "/5", 0, imageBytes);
+        newBoulder = new Boulder(name, address, rating + "/5", 0, intIsDone, imageBytes);
 
         // Save to database
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -209,7 +210,8 @@ public class AddLocation extends AppCompatActivity {
         values.put(DatabaseHelper.COLUMN_NAME, newBoulder.getName());
         values.put(DatabaseHelper.COLUMN_ADDRESS, newBoulder.getAddress());
         values.put(DatabaseHelper.COLUMN_RATING, newBoulder.getRating());
-        values.put(DatabaseHelper.IS_ACTIVE, newBoulder.getIsActive());
+        values.put(DatabaseHelper.COLUMN_IS_ACTIVE, newBoulder.getIsActive());
+        values.put(DatabaseHelper.COLUMN_IS_DONE, newBoulder.getIsDone());
         values.put(DatabaseHelper.COLUMN_IMAGE, newBoulder.getImageBytes());
         db.insert(DatabaseHelper.TABLE_LOCATIONS, null, values);
 

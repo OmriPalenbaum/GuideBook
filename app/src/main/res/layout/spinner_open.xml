@@ -17,7 +17,7 @@
         android:fontFamily="@font/squares" />
 
     <ImageView
-        android:id="@+id/spinnerArrow"
+        android:id="@+id/spinnerIcon"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:scaleType="fitXY"

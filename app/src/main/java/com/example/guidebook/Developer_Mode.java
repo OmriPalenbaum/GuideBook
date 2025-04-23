@@ -33,11 +33,10 @@ public class Developer_Mode extends AppCompatActivity {
     //method to retrieve all data from the database
     public ArrayList<Boulder> getAllRecords() {
         String name, address, rating;
-        int isActive;
+        int isActive, isDone;
         byte[] imageBytes; // For storing image as byte array
         db = dbHelper.getReadableDatabase();
         ArrayList<Boulder> list = new ArrayList<>();
-//        ArrayList<byte[]> imageList = new ArrayList<>();
         Cursor cursor = db.query(DatabaseHelper.TABLE_LOCATIONS, null, null, null, null, null, null);
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -45,7 +44,8 @@ public class Developer_Mode extends AppCompatActivity {
                 int indexName = cursor.getColumnIndex(DatabaseHelper.COLUMN_NAME);
                 int indexAddress = cursor.getColumnIndex(DatabaseHelper.COLUMN_ADDRESS);
                 int indexRating = cursor.getColumnIndex(DatabaseHelper.COLUMN_RATING);
-                int indexIsActive = cursor.getColumnIndex(DatabaseHelper.IS_ACTIVE);
+                int indexIsActive = cursor.getColumnIndex(DatabaseHelper.COLUMN_IS_ACTIVE);
+                int indexIsDone = cursor.getColumnIndex(DatabaseHelper.COLUMN_IS_DONE);
                 int indexImage = cursor.getColumnIndex(DatabaseHelper.COLUMN_IMAGE); // Now a TEXT column
                 //checks if all the indexes are valid
                 if (indexName != -1 && indexAddress != -1 && indexRating != -1 && indexIsActive != -1 && indexImage != -1) {
@@ -53,14 +53,14 @@ public class Developer_Mode extends AppCompatActivity {
                     address = cursor.getString(indexAddress);
                     rating = cursor.getString(indexRating);
                     isActive = cursor.getInt(indexIsActive);
+                    isDone = cursor.getInt(indexIsDone);
                     // Retrieve image as byte array
                     imageBytes = cursor.getBlob(indexImage);
 
                     //puts the data in a new Boulder object
-                    Boulder record = new Boulder(name, address, rating, isActive, imageBytes);
+                    Boulder record = new Boulder(name, address, rating, isActive, isDone, imageBytes);
                     //adds the new object to the list
                     list.add(record);
-//                    imageList.add(record.getImageBytes());
                 }
             }
             cursor.close();
@@ -100,21 +100,19 @@ public class Developer_Mode extends AppCompatActivity {
             }
         }
         //sends the data to the recycler view adapter
-        adapter = new Dev_Adapter(inActiveBoulders, new Dev_Adapter.OnItemClickListener() {
-            @Override
+        adapter = new Dev_Adapter(inActiveBoulders) {
             public void onItemClick(Boulder boulder, int position) {
                 adapter.notifyDataSetChanged();
             }
-        });
+        };
         recyclerViewInActive.setAdapter(adapter);
 
         //sends the data to the recycler view adapter
-        adapter2 = new Dev_Adapter(activeBoulders, new Dev_Adapter.OnItemClickListener() {
-            @Override
+        adapter2 = new Dev_Adapter(activeBoulders) {
             public void onItemClick(Boulder boulder, int position) {
                 adapter.notifyDataSetChanged();
             }
-        });
+        };
         recyclerViewActive.setAdapter(adapter2);
 
         // sets listener for the image button

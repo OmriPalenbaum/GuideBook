@@ -20,7 +20,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_ADDRESS = "address";
     public static final String COLUMN_RATING = "rating";
-    public static final String IS_ACTIVE = "is_active";
+    public static final String COLUMN_IS_ACTIVE = "is_active";
+    public static final String COLUMN_IS_DONE = "is_done";
     public static final String COLUMN_IMAGE = "image";
     // Create Table SQL Statement
     private static final String CREATE_TABLE_LOCATIONS = "CREATE TABLE "
@@ -28,7 +29,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_NAME + " TEXT, "
             + COLUMN_ADDRESS + " TEXT, "
             + COLUMN_RATING + " TEXT, "
-            + IS_ACTIVE + " INTEGER, "
+            + COLUMN_IS_ACTIVE + " INTEGER, "
+            + COLUMN_IS_DONE + " INTEGER, "
             + COLUMN_IMAGE + " BLOB"
             + ")";
 
@@ -55,7 +57,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void updateBoulderStatus1(String name){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put("IS_ACTIVE",1);
+        cv.put(COLUMN_IS_ACTIVE,1);
         db.update(TABLE_LOCATIONS, cv, "name = ?", new String[]{name});
         db.close();
     }
@@ -63,8 +65,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void updateBoulderStatus0(String name){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put("IS_ACTIVE",0);
+        cv.put(COLUMN_IS_ACTIVE,0);
         db.update(TABLE_LOCATIONS, cv, "name = ?", new String[]{name});
+        db.close();
+    }
+    // Method to update the 'is_done' based on the Boulder name
+    public void updateIsDone(String name, boolean isDone) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_IS_DONE, isDone ? 1 : 0);
+        db.update(TABLE_LOCATIONS, cv, COLUMN_NAME + " = ?", new String[]{name});
         db.close();
     }
 

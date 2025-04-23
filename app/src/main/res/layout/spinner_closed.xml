@@ -16,9 +16,8 @@
         android:textColor="#000000"
         android:fontFamily="@font/squares" />
 
-    <!-- Icon for dropdown arrow or icon -->
     <ImageView
-        android:id="@+id/spinnerArrow"
+        android:id="@+id/spinnerIcon"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:adjustViewBounds="true"

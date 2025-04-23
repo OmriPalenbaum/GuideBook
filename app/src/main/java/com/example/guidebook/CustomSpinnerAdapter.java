@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 public class CustomSpinnerAdapter extends ArrayAdapter<String> {
     private final Context context;
     private final String[] options;
@@ -20,6 +22,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
         this.icons = icons;
     }
 
+    @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // This is the view that shows when the spinner is closed
@@ -28,7 +31,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
         }
 
         TextView text = convertView.findViewById(R.id.spinnerText);
-        ImageView icon = convertView.findViewById(R.id.spinnerArrow);
+        ImageView icon = convertView.findViewById(R.id.spinnerIcon);
 
         text.setText(options[position]);
         icon.setImageResource(icons[position]);
@@ -44,7 +47,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
         }
 
         TextView text = convertView.findViewById(R.id.spinnerText);
-        ImageView icon = convertView.findViewById(R.id.spinnerArrow);
+        ImageView icon = convertView.findViewById(R.id.spinnerIcon);
 
         text.setText(options[position]);
         icon.setImageResource(icons[position]);

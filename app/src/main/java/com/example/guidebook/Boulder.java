@@ -10,13 +10,15 @@ public class Boulder implements Serializable{
     private String address;
     private String rating;
     private boolean isActive;
+    private boolean isDone;
     private byte[] imageBytes;
 
-    public Boulder(String name, String address, String rating, int isActive, byte[] imageBytes) {
+    public Boulder(String name, String address, String rating, int isActive, int isDone, byte[] imageBytes) {
         this.name = name;
         this.address = address;
         this.rating = rating;
         this.isActive = (isActive == 1); //if input for isActive is 1, set to true. else, set to false
+        this.isDone = (isDone == 1); //if input for isDone is 1, set to true. else, set to false
         this.imageBytes = imageBytes;
     }
 
@@ -54,6 +56,14 @@ public class Boulder implements Serializable{
 
     public byte[] getImageBytes() {
         return imageBytes;
+    }
+
+    public boolean getIsDone() {
+        return isDone;
+    }
+
+    public void setIsDone(boolean isDone) {
+        this.isDone = isDone;
     }
 
     public void setImageBytes(byte[] imageBytes) {

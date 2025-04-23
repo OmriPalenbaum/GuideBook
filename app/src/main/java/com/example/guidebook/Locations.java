@@ -20,6 +20,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -36,6 +37,7 @@ public class Locations extends AppCompatActivity {
     ImageButton ibBack;
     TextView tvTitle;
     Spinner spinnerSort;
+    CheckBox checkBoxShowDone;
     RecyclerView recyclerView;
     FrameLayout fragmentContainer;
     Item_Adapter adapter;
@@ -55,18 +57,19 @@ public class Locations extends AppCompatActivity {
         if (count == 0) {
             // Hardcoded data, a few locations
             Boulder[] arrBoulder = new Boulder[5];
-            arrBoulder[0] = new Boulder("Timna", "Eilat", "4.6/5", 1, convertResourceToByteArray(R.drawable.cliff_image_timna));
-            arrBoulder[1] = new Boulder("Cabara cliff", "Zichron Ya'akov", "3.4/5", 1, convertResourceToByteArray(R.drawable.cliff_image_cabara));
-            arrBoulder[2] = new Boulder("Beit Arie", "Ofarim", "4/5", 1, convertResourceToByteArray(R.drawable.cliff_image_arie));
-            arrBoulder[3] = new Boulder("Zanoah cliff", "Zanoah", "3.7/5", 1, convertResourceToByteArray(R.drawable.cliff_image_zanoah));
-            arrBoulder[4] = new Boulder("Beit Oren", "Beit Oren", "4.6/5", 1, convertResourceToByteArray(R.drawable.cliff_image_oren));
+            arrBoulder[0] = new Boulder("Timna", "Eilat", "4.6/5", 1, 0, convertResourceToByteArray(R.drawable.cliff_image_timna));
+            arrBoulder[1] = new Boulder("Cabara cliff", "Zichron Ya'akov", "3.4/5", 1, 0, convertResourceToByteArray(R.drawable.cliff_image_cabara));
+            arrBoulder[2] = new Boulder("Beit Arie", "Ofarim", "4/5", 1, 0, convertResourceToByteArray(R.drawable.cliff_image_arie));
+            arrBoulder[3] = new Boulder("Zanoah cliff", "Zanoah", "3.7/5", 1, 0, convertResourceToByteArray(R.drawable.cliff_image_zanoah));
+            arrBoulder[4] = new Boulder("Beit Oren", "Beit Oren", "4.6/5", 1, 0, convertResourceToByteArray(R.drawable.cliff_image_oren));
             // Loop through each boulder and insert it into the database
             for (Boulder boulder : arrBoulder) {
                 cv.clear();
                 cv.put(DatabaseHelper.COLUMN_NAME, boulder.getName());
                 cv.put(DatabaseHelper.COLUMN_ADDRESS, boulder.getAddress());
                 cv.put(DatabaseHelper.COLUMN_RATING, boulder.getRating());
-                cv.put(DatabaseHelper.IS_ACTIVE, boulder.getIsActive());
+                cv.put(DatabaseHelper.COLUMN_IS_ACTIVE, boulder.getIsActive());
+                cv.put(DatabaseHelper.COLUMN_IS_DONE, boulder.getIsDone());
                 cv.put(DatabaseHelper.COLUMN_IMAGE, boulder.getImageBytes());
                 db.insert(DatabaseHelper.TABLE_LOCATIONS, null, cv);
             }
@@ -77,11 +80,10 @@ public class Locations extends AppCompatActivity {
     //method to retrieve all data from the database
     public ArrayList<Boulder> getAllRecords() {
         String name, address, rating;
-        int isActive;
+        int isActive, isDone;
         byte[] imageBytes; // For storing image as byte array
         db = dbHelper.getReadableDatabase();
         ArrayList<Boulder> list = new ArrayList<>();
-//        ArrayList<byte[]> imageList = new ArrayList<>();
         Cursor cursor = db.query(DatabaseHelper.TABLE_LOCATIONS, null, null, null, null, null, null);
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -89,7 +91,8 @@ public class Locations extends AppCompatActivity {
                 int indexName = cursor.getColumnIndex(DatabaseHelper.COLUMN_NAME);
                 int indexAddress = cursor.getColumnIndex(DatabaseHelper.COLUMN_ADDRESS);
                 int indexRating = cursor.getColumnIndex(DatabaseHelper.COLUMN_RATING);
-                int indexIsActive = cursor.getColumnIndex(DatabaseHelper.IS_ACTIVE);
+                int indexIsActive = cursor.getColumnIndex(DatabaseHelper.COLUMN_IS_ACTIVE);
+                int indexIsDone = cursor.getColumnIndex(DatabaseHelper.COLUMN_IS_DONE);
                 int indexImage = cursor.getColumnIndex(DatabaseHelper.COLUMN_IMAGE); // Now a TEXT column
                 //checks if all the indexes are valid
                 if (indexName != -1 && indexAddress != -1 && indexRating != -1 && indexIsActive != -1 && indexImage != -1) {
@@ -97,14 +100,14 @@ public class Locations extends AppCompatActivity {
                     address = cursor.getString(indexAddress);
                     rating = cursor.getString(indexRating);
                     isActive = cursor.getInt(indexIsActive);
+                    isDone = cursor.getInt(indexIsDone);
                     // Retrieve image as byte array
                     imageBytes = cursor.getBlob(indexImage);
 
                     //puts the data in a new Boulder object
-                    Boulder record = new Boulder(name, address, rating, isActive, imageBytes);
+                    Boulder record = new Boulder(name, address, rating, isActive, isDone, imageBytes);
                     //adds the new object to the list
                     list.add(record);
-//                    imageList.add(record.getImageBytes());
                 }
             }
             cursor.close();
@@ -160,6 +163,7 @@ public class Locations extends AppCompatActivity {
         ibBack = findViewById(R.id.imageButton1);
         tvTitle = findViewById(R.id.tvLocations);
         spinnerSort = findViewById(R.id.spinnerSort);
+        checkBoxShowDone = findViewById(R.id.checkboxShowDone);
 
         String[] sortOptions = getResources().getStringArray(R.array.sort_options);
         int[] sortIcons = new int[] {
@@ -184,17 +188,25 @@ public class Locations extends AppCompatActivity {
         }
 
         // Initialize the adapter with the list of boulders and an OnItemClickListener
-        adapter = new Item_Adapter(activeBoulders, new Item_Adapter.OnItemClickListener() {
-            @Override
+        adapter = new Item_Adapter(activeBoulders) {
             public void onItemClick(Boulder boulder, int position) {
                 // Handle the item click, fragment transaction will happen inside the adapter
                 String name = boulder.getName();
-                Toast.makeText(Locations.this, "Clicked: " + name, Toast.LENGTH_SHORT).show();
             }
-        });
+        };
 
         // Set the adapter to the RecyclerView
         recyclerView.setAdapter(adapter);
+
+        checkBoxShowDone.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            ArrayList<Boulder> filteredList = new ArrayList<>();
+            for (Boulder b : boulderList) {
+                if (b.getIsActive() && (isChecked || !b.getIsDone())) {
+                    filteredList.add(b);
+                }
+            }
+            adapter.updateList(filteredList);
+        });
 
         btAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -261,7 +273,10 @@ public class Locations extends AppCompatActivity {
                     if (password.isEmpty()) {
                         showErrorMessage("Password cannot be empty");
                     } else if (password.equals("PASS")) {
-                        showCountdown();
+                        Intent intent = new Intent(Locations.this, Developer_Mode.class);
+                        startActivity(intent);
+                        // Show a toast message
+                        Toast.makeText(Locations.this, "Developer mode activated!", Toast.LENGTH_SHORT).show();
                     } else {
                         showErrorMessage("Incorrect password!");
                     }
@@ -281,35 +296,6 @@ public class Locations extends AppCompatActivity {
         showKeyboard(passwordInput);
     }
 
-    private void showCountdown() {
-        final TextView countdownView = new TextView(this);
-        countdownView.setTextSize(24); // Customize text size
-        countdownView.setPadding(50, 50, 50, 50); // Add padding for better appearance
-
-        AlertDialog countdownDialog = new AlertDialog.Builder(this)
-                .setTitle("Launching Developer Mode")
-                .setView(countdownView)
-                .setCancelable(false) // Prevent user from dismissing the countdown
-                .create();
-
-        countdownDialog.show();
-
-        // Start a 5-second countdown
-        new CountDownTimer(5000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                countdownView.setText("Opening in " + millisUntilFinished / 1000 + " seconds...");
-            }
-
-            public void onFinish() {
-                countdownDialog.dismiss();
-                Intent intent = new Intent(Locations.this, Developer_Mode.class);
-                startActivity(intent);
-
-                // Show a toast message
-                Toast.makeText(Locations.this, "Developer mode activated!", Toast.LENGTH_SHORT).show();
-            }
-        }.start();
-    }
     private void showErrorMessage(String message) {
         new AlertDialog.Builder(this)
                 .setTitle("Error")
@@ -332,5 +318,4 @@ public class Locations extends AppCompatActivity {
             imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
         }
     }
-
 }

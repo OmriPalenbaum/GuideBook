@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,32 +17,40 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-public class BoulderFragment extends Fragment{
+public class BoulderFragment extends Fragment {
 
     private static final String APIKEY = "20deb2d30fc03075f6b90c285858e376";
     private static final String UNITS = "metric";
     private String name;
     private String address;
     private String rating;
+    private boolean isDone;
     private byte[] imageBytes; // Byte array for the image
+    private OnBoulderUpdatedListener listener;
+
+    public void setOnBoulderUpdatedListener(OnBoulderUpdatedListener listener) {
+        this.listener = listener;
+    }
 
     // Static factory method to create a new instance of the fragment with arguments
-    public static BoulderFragment newInstance(String name, String address, String rating, byte[] imageBytes) {
+    public static BoulderFragment newInstance(String name, String address, String rating, boolean isDone, byte[] imageBytes) {
         BoulderFragment fragment = new BoulderFragment();
         Bundle args = new Bundle();
         args.putString("name", name);
         args.putString("address", address);
         args.putString("rating", rating);
+        args.putBoolean("isDone", isDone);
         args.putByteArray("imageBytes", imageBytes);
         fragment.setArguments(args);
         return fragment;
@@ -54,6 +63,7 @@ public class BoulderFragment extends Fragment{
             name = getArguments().getString("name");
             address = getArguments().getString("address");
             rating = getArguments().getString("rating");
+            isDone = getArguments().getBoolean("isDone", false);
             imageBytes = getArguments().getByteArray("imageBytes");
         }
         Log.d("BoulderFragment", "Fragment onCreate");
@@ -74,20 +84,42 @@ public class BoulderFragment extends Fragment{
         TextView textViewWeather1 = view.findViewById(R.id.textViewWeather1);
         TextView textViewWeather2 = view.findViewById(R.id.textViewWeather2);
         ImageView imageViewWeather = view.findViewById(R.id.imageViewWeather);
-        ImageView imageViewBoulder = view.findViewById(R.id.imageViewBoulder);
+        ImageView imageBoulder = view.findViewById(R.id.imageViewBoulder);
+        ImageButton icon = view.findViewById(R.id.buttonClimberDone);
         ImageButton buttonBack = view.findViewById(R.id.buttonBack);
 
         textViewName.setText(name);
         textViewAddress.setText("Address: " + address);
         textViewRating.setText("Rating: " + rating);
 
-        // Convert byte array to Bitmap and set it to the ImageView
+        // Convert byte array to Bitmap and set it to the ImageButton
         if (imageBytes != null && imageBytes.length > 0) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-            imageViewBoulder.setImageBitmap(bitmap);
+            imageBoulder.setImageBitmap(bitmap);
         } else {
-            imageViewBoulder.setImageResource(R.drawable.icon_no_image); // Fallback image
+            imageBoulder.setImageResource(R.drawable.icon_no_image); // Fallback image
         }
+
+        // Set the icon with transparency based on the initial state of isDone
+        setBoulderIcon(icon, isDone);
+
+        // Set onClickListener for the icon to toggle isDone state
+        icon.setOnClickListener(v -> {
+            // Toggle the isDone state
+            isDone = !isDone;
+
+            // Update the icon with new transparency based on the updated isDone state
+            setBoulderIcon(icon, isDone);
+
+            // Update the database with the new isDone state
+            DatabaseHelper dbHelper = new DatabaseHelper(requireContext());
+            dbHelper.updateIsDone(name, isDone);
+
+            // Notify the listener about the change
+            if (listener != null) {
+                listener.onBoulderUpdated(name, isDone);
+            }
+        });
 
         imageButtonNav.setOnClickListener(v -> openGoogleMapsNavigation(address));
 
@@ -110,14 +142,13 @@ public class BoulderFragment extends Fragment{
                     textViewWeather2.setText(weatherInfo);
 
                     // Set the weather image to clear skies by default. If the temperature is less than 15°C, change the weather image to rainy
-                    imageViewWeather.setImageResource( R.drawable.icon_clear_skies);
+                    imageViewWeather.setImageResource(R.drawable.icon_clear_skies);
                     if (weather.getMain().getTemp() < 15) {
-                        imageViewWeather.setImageResource( R.drawable.icon_rainy);
+                        imageViewWeather.setImageResource(R.drawable.icon_rainy);
                     }
                 } else {
                     // If the response is not successful or contains no data, display an error message in textViewWeather1
-
-                    textViewWeather1.setText("Error: Unable to fetch weather data.");
+                    textViewWeather1.setText("address wasn't found in website");
                 }
             }
 
@@ -130,9 +161,13 @@ public class BoulderFragment extends Fragment{
         buttonBack.setOnClickListener(v -> {
             // Get the RecyclerView reference from the parent activity
             RecyclerView recyclerView = getActivity().findViewById(R.id.recyclerView);
+            Spinner spinner = ((AppCompatActivity) v.getContext()).findViewById(R.id.spinnerSort);
+            CheckBox checkBox = ((AppCompatActivity) v.getContext()).findViewById(R.id.checkboxShowDone);
             // Set the RecyclerView visibility to VISIBLE
             if (recyclerView != null) {
                 recyclerView.setVisibility(View.VISIBLE);
+                spinner.setVisibility(View.VISIBLE);
+                checkBox.setVisibility(View.VISIBLE);
             }
 
             // Get the FrameLayout reference
@@ -147,8 +182,19 @@ public class BoulderFragment extends Fragment{
                 getParentFragmentManager().popBackStack();
             }
         });
+
         return view;
     }
+
+    // Method to set the boulder icon based on whether it's marked as "done"
+    private void setBoulderIcon(ImageButton imageButton, boolean isDone) {
+        if (isDone) {
+            imageButton.setAlpha(1f); // Set the icon to fully visible (color full)
+        } else {
+            imageButton.setAlpha(0.5f); // Set the icon to 50% transparent
+        }
+    }
+
     private void openGoogleMapsNavigation(String locationAddress) {
         // Encode the location name and Creates a URI for Google Maps navigation using the encoded destination
         String destination = Uri.encode(locationAddress + " עיר, Israel");
@@ -164,5 +210,9 @@ public class BoulderFragment extends Fragment{
         } else {
             Toast.makeText(getContext(), "Google Maps app not installed!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public interface OnBoulderUpdatedListener {
+        void onBoulderUpdated(String boulderName, boolean isDone);
     }
 }
