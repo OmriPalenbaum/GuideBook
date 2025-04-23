@@ -1,0 +1,245 @@
+@startuml
+abstract class com.example.guidebook.MultiClickListener {
+- {static} long CLICK_TIME_THRESHOLD
+- {static} int REQUIRED_CLICKS
+- int clickCount
+- Handler handler
+- Runnable resetRunnable
++ void onClick(View)
+- void resetClickCount()
++ {abstract}void onMultipleClicks(View)
+}
+
+
+class com.example.guidebook.MainActivity {
+~ Button btLocations
+~ Button btTips
+# void onCreate(Bundle)
+- void checkInternetConnection()
+}
+
+
+class com.example.guidebook.Boulder {
+- String name
+- String address
+- String rating
+- boolean isActive
+- byte[] imageBytes
++ String getName()
++ void setName(String)
++ String getAddress()
++ void setAddress(String)
++ String getRating()
++ void setRating(String)
++ boolean getIsActive()
++ void setIsActive(boolean)
++ byte[] getImageBytes()
++ void setImageBytes(byte[])
+}
+
+
+class com.example.guidebook.Locations {
+~ Button btAdd
+~ ImageButton ibBack
+~ TextView tvTitle
+~ Spinner spinnerSort
+~ RecyclerView recyclerView
+~ FrameLayout fragmentContainer
+~ Item_Adapter adapter
+~ DatabaseHelper dbHelper
+~ SQLiteDatabase db
+~ ContentValues cv
++ void insertTable()
++ ArrayList<Boulder> getAllRecords()
+- byte[] convertResourceToByteArray(int)
+# void onCreate(Bundle)
+- void showPasswordDialog()
+- void showErrorMessage(String)
+- void hideKeyboard(EditText)
+- void showKeyboard(EditText)
+}
+
+
+class com.example.guidebook.Developer_Mode {
+~ ImageButton ibBack
+~ TextView tvInActive
+~ Dev_Adapter adapter
+~ Dev_Adapter adapter2
+~ RecyclerView recyclerViewInActive
+~ RecyclerView recyclerViewActive
+~ DatabaseHelper dbHelper
+~ SQLiteDatabase db
++ ArrayList<Boulder> getAllRecords()
+# void onCreate(Bundle)
+}
+
+
+class com.example.guidebook.Dev_Adapter {
+- List<Boulder> boulderList
+- DatabaseHelper dbHelper
+- Dev_Adapter.OnItemClickListener listener
++ BoulderViewHolder onCreateViewHolder(ViewGroup,int)
++ void onBindViewHolder(BoulderViewHolder,int)
++ int getItemCount()
+- void showConfirmationDialog(View,int)
+}
+
+
+class com.example.guidebook.Dev_Adapter$BoulderViewHolder {
+~ TextView nameTextView
+~ ImageView imageView
+}
+
+interface com.example.guidebook.Dev_Adapter$OnItemClickListener {
+~ void onItemClick(Boulder,int)
+}
+
+class com.example.guidebook.DatabaseHelper {
+- {static} String DATABASE_NAME
+- {static} int DATABASE_VERSION
++ {static} String TABLE_LOCATIONS
++ {static} String COLUMN_NAME
++ {static} String COLUMN_ADDRESS
++ {static} String COLUMN_RATING
++ {static} String IS_ACTIVE
++ {static} String COLUMN_IMAGE
+- {static} String CREATE_TABLE_LOCATIONS
++ void onCreate(SQLiteDatabase)
++ void onUpgrade(SQLiteDatabase,int,int)
++ void updateBoulderStatus1(String)
++ void updateBoulderStatus0(String)
+}
+
+
+class com.example.guidebook.ExampleInstrumentedTest {
++ void useAppContext()
+}
+
+class com.example.guidebook.TipsAndInfo {
+~ ImageButton ibBack
+# void onCreate(Bundle)
+}
+
+
+class com.example.guidebook.ExampleUnitTest {
++ void addition_isCorrect()
+}
+
+class com.example.guidebook.BoulderFragment {
+- {static} String APIKEY
+- {static} String UNITS
+- String name
+- String address
+- String rating
+- byte[] imageBytes
++ {static} BoulderFragment newInstance(String,String,String,byte[])
++ void onCreate(Bundle)
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+- void openGoogleMapsNavigation(String)
+}
+
+
+class com.example.guidebook.CustomSpinnerAdapter {
+- Context context
+- String[] options
+- int[] icons
++ View getView(int,View,ViewGroup)
++ View getDropDownView(int,View,ViewGroup)
+}
+
+
+class com.example.guidebook.RetrofitClient {
+- {static} String BASE_URL
+- {static} Retrofit retrofit
++ {static} Retrofit getClient()
+}
+
+
+class com.example.guidebook.WeatherResponse {
+- String name
+- Main main
+- List<Weather> weather
++ String getName()
++ Main getMain()
++ List<Weather> getWeather()
+}
+
+
+class com.example.guidebook.WeatherResponse$Main {
+- double temp
+- int humidity
++ double getTemp()
++ int getHumidity()
+}
+
+
+class com.example.guidebook.WeatherResponse$Weather {
+- String description
++ String getDescription()
+}
+
+
+class com.example.guidebook.AddLocation {
+~ EditText etName
+~ EditText etAddress
+~ EditText etRating
+~ ImageView setCamera
+~ ImageButton ibBack2
+~ Button btSubmit
+~ Boulder newBoulder
+~ ActivityResultLauncher<Intent> arCamera
+~ ActivityResultLauncher<Intent> arGallery
+~ DatabaseHelper dbHelper
+~ byte[] imageBytes
+# void onCreate(Bundle)
+- void showImageSourceDialog()
+- byte[] convertBitmapToByteArray(Bitmap)
+- int saveBoulderData()
+}
+
+
+interface com.example.guidebook.WeatherApiService {
+~ Call<WeatherResponse> getWeather(String,String,String)
+}
+
+class com.example.guidebook.Item_Adapter {
+- List<Boulder> boulderList
+- OnItemClickListener listener
++ BoulderViewHolder onCreateViewHolder(ViewGroup,int)
++ void onBindViewHolder(BoulderViewHolder,int)
++ int getItemCount()
+}
+
+
+class com.example.guidebook.Item_Adapter$BoulderViewHolder {
+~ TextView nameTextView
+~ ImageView imageView
+}
+
+interface com.example.guidebook.Item_Adapter$OnItemClickListener {
+~ void onItemClick(Boulder,int)
+}
+
+
+
+com.example.guidebook.OnClickListener <|.. com.example.guidebook.MultiClickListener
+androidx.appcompat.app.AppCompatActivity <|-- com.example.guidebook.MainActivity
+java.io.Serializable <|.. com.example.guidebook.Boulder
+androidx.appcompat.app.AppCompatActivity <|-- com.example.guidebook.Locations
+androidx.appcompat.app.AppCompatActivity <|-- com.example.guidebook.Developer_Mode
+com.example.guidebook.Adapter <|-- com.example.guidebook.Dev_Adapter
+com.example.guidebook.Dev_Adapter +.. com.example.guidebook.Dev_Adapter$BoulderViewHolder
+com.example.guidebook.ViewHolder <|-- com.example.guidebook.Dev_Adapter$BoulderViewHolder
+com.example.guidebook.Dev_Adapter +.. com.example.guidebook.Dev_Adapter$OnItemClickListener
+android.database.sqlite.SQLiteOpenHelper <|-- com.example.guidebook.DatabaseHelper
+androidx.appcompat.app.AppCompatActivity <|-- com.example.guidebook.TipsAndInfo
+androidx.fragment.app.Fragment <|-- com.example.guidebook.BoulderFragment
+android.widget.ArrayAdapter <|-- com.example.guidebook.CustomSpinnerAdapter
+com.example.guidebook.WeatherResponse +.. com.example.guidebook.WeatherResponse$Main
+com.example.guidebook.WeatherResponse +.. com.example.guidebook.WeatherResponse$Weather
+androidx.appcompat.app.AppCompatActivity <|-- com.example.guidebook.AddLocation
+com.example.guidebook.Adapter <|-- com.example.guidebook.Item_Adapter
+com.example.guidebook.Item_Adapter +.. com.example.guidebook.Item_Adapter$BoulderViewHolder
+com.example.guidebook.ViewHolder <|-- com.example.guidebook.Item_Adapter$BoulderViewHolder
+com.example.guidebook.Item_Adapter +.. com.example.guidebook.Item_Adapter$OnItemClickListener
+@enduml
