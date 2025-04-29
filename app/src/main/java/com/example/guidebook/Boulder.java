@@ -13,6 +13,7 @@ public class Boulder implements Serializable{
     private boolean isDone;
     private byte[] imageBytes;
 
+    //Constructor
     public Boulder(String name, String address, String rating, int isActive, int isDone, byte[] imageBytes) {
         this.name = name;
         this.address = address;
@@ -22,6 +23,7 @@ public class Boulder implements Serializable{
         this.imageBytes = imageBytes;
     }
 
+    //Getters and Setters
     public String getName() {
         return name;
     }

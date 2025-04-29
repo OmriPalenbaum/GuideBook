@@ -17,10 +17,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
+// RecyclerView Adapter for development purposes (editing and activating boulders)
 public class Dev_Adapter extends RecyclerView.Adapter<Dev_Adapter.BoulderViewHolder> {
 
-    private List<Boulder> boulderList;
-    private DatabaseHelper dbHelper;
+    private List<Boulder> boulderList; // List of boulders to display
+    private DatabaseHelper dbHelper;   // Database helper for updating entries
 
     // Constructor
     public Dev_Adapter(List<Boulder> boulderList) {
@@ -30,8 +31,9 @@ public class Dev_Adapter extends RecyclerView.Adapter<Dev_Adapter.BoulderViewHol
     @NonNull
     @Override
     public BoulderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Inflate the item layout
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_layout, parent, false); // Uses the same layout as Item_Adapter
+                .inflate(R.layout.item_layout, parent, false);
         return new BoulderViewHolder(view);
     }
 
@@ -39,23 +41,23 @@ public class Dev_Adapter extends RecyclerView.Adapter<Dev_Adapter.BoulderViewHol
     public void onBindViewHolder(@NonNull BoulderViewHolder holder, int position) {
         Boulder currentBoulder = boulderList.get(position);
 
-        // Set name, address, and rating
+        // Set name, address, and rating in the item
         holder.nameTextView.setText(currentBoulder.getName());
-        holder.addressTextView.setText(currentBoulder.getAddress() + "\uD83D\uDCCD");
+        holder.addressTextView.setText(currentBoulder.getAddress() + "\uD83D\uDCCD"); // Add location pin emoji
         holder.ratingTextView.setText(currentBoulder.getRating() + "⭐");
 
-        // Convert byte[] to Bitmap and set it to ImageView
+        // Load and display image
         byte[] imageBytes = currentBoulder.getImageBytes();
         if (imageBytes != null && imageBytes.length > 0) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
             holder.imageView.setImageBitmap(bitmap);
         } else {
-            // Log the issue and set default image
+            // No image available — use default icon
             Log.d("Dev_Adapter", "No image data available for Boulder: " + currentBoulder.getName());
-            holder.imageView.setImageResource(R.drawable.icon_empty_camera); // Default image if BLOB is null
+            holder.imageView.setImageResource(R.drawable.icon_empty_camera);
         }
 
-        // Set click listener to show options dialog
+        // Handle item clicks
         holder.itemView.setOnClickListener(v -> showOptionsDialog(v, position));
     }
 
@@ -64,20 +66,21 @@ public class Dev_Adapter extends RecyclerView.Adapter<Dev_Adapter.BoulderViewHol
         return boulderList.size();
     }
 
-    // ViewHolder class
+    // ViewHolder for Boulder item
     public static class BoulderViewHolder extends RecyclerView.ViewHolder {
         TextView nameTextView, addressTextView, ratingTextView;
         ImageView imageView;
 
         public BoulderViewHolder(@NonNull View itemView) {
             super(itemView);
-            nameTextView = itemView.findViewById(R.id.itemName);       // Reference to Name TextView
-            addressTextView = itemView.findViewById(R.id.itemAddress); // Reference to Address TextView
-            ratingTextView = itemView.findViewById(R.id.itemRating);  // Reference to Rating TextView
-            imageView = itemView.findViewById(R.id.itemImage);        // Reference to ImageView
+            nameTextView = itemView.findViewById(R.id.itemName);
+            addressTextView = itemView.findViewById(R.id.itemAddress);
+            ratingTextView = itemView.findViewById(R.id.itemRating);
+            imageView = itemView.findViewById(R.id.itemImage);
         }
     }
 
+    // Show dialog to choose between editing or activating/deactivating the boulder
     private void showOptionsDialog(View view, int position) {
         Boulder boulder = boulderList.get(position);
         dbHelper = new DatabaseHelper(view.getContext());
@@ -88,17 +91,16 @@ public class Dev_Adapter extends RecyclerView.Adapter<Dev_Adapter.BoulderViewHol
                 .setTitle("Choose Action")
                 .setItems(options, (dialog, which) -> {
                     if (which == 0) {
-                        // Edit Boulder Details
-                        showEditOptionsDialog(view, position);
+                        showEditOptionsDialog(view, position); // Editing details
                     } else {
-                        // Activate/Deactivate (old functionality)
-                        showConfirmationDialog(view, position);
+                        showConfirmationDialog(view, position); // Toggling activation
                     }
                 })
                 .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
                 .show();
     }
 
+    // Show dialog to choose which field to edit (name, address, or rating)
     private void showEditOptionsDialog(View view, int position) {
         Boulder boulder = boulderList.get(position);
         CharSequence[] editOptions = {"Edit Name", "Edit Address", "Edit Rating"};
@@ -106,15 +108,14 @@ public class Dev_Adapter extends RecyclerView.Adapter<Dev_Adapter.BoulderViewHol
         new AlertDialog.Builder(view.getContext())
                 .setTitle("Edit " + boulder.getName())
                 .setItems(editOptions, (dialog, which) -> {
-                    // Handle edit option selection
                     switch (which) {
-                        case 0: // Edit Name
+                        case 0:
                             showEditDialog(view, position, "name", boulder.getName());
                             break;
-                        case 1: // Edit Address
+                        case 1:
                             showEditDialog(view, position, "address", boulder.getAddress());
                             break;
-                        case 2: // Edit Rating
+                        case 2:
                             showEditDialog(view, position, "rating", boulder.getRating());
                             break;
                     }
@@ -123,18 +124,17 @@ public class Dev_Adapter extends RecyclerView.Adapter<Dev_Adapter.BoulderViewHol
                 .show();
     }
 
+    // Show input dialog to edit a specific field
     private void showEditDialog(View view, int position, String field, String currentValue) {
         Boulder boulder = boulderList.get(position);
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
         builder.setTitle("Edit " + field.substring(0, 1).toUpperCase() + field.substring(1));
 
-        // Set up the input
-        final EditText input = new EditText(view.getContext());
+        final EditText input = new EditText(view.getContext()); // Input field
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         input.setText(currentValue);
         builder.setView(input);
 
-        // Set up the buttons
         builder.setPositiveButton("Save", (dialog, which) -> {
             String newValue = input.getText().toString().trim();
             if (!newValue.isEmpty()) {
@@ -148,6 +148,7 @@ public class Dev_Adapter extends RecyclerView.Adapter<Dev_Adapter.BoulderViewHol
         builder.show();
     }
 
+    // Update a field (name, address, or rating) both in memory and in the database
     private void updateBoulderField(View view, Boulder boulder, String field, String newValue, int position) {
         switch (field) {
             case "name":
@@ -172,9 +173,10 @@ public class Dev_Adapter extends RecyclerView.Adapter<Dev_Adapter.BoulderViewHol
                 field.substring(0, 1).toUpperCase() + field.substring(1) + " updated successfully",
                 Toast.LENGTH_SHORT).show();
 
-        notifyItemChanged(position);
+        notifyItemChanged(position); // Refresh the item in RecyclerView
     }
 
+    // Show confirmation dialog to activate/deactivate a boulder
     private void showConfirmationDialog(View view, int position) {
         Boulder boulder = boulderList.get(position);
 
@@ -182,11 +184,10 @@ public class Dev_Adapter extends RecyclerView.Adapter<Dev_Adapter.BoulderViewHol
                 .setTitle("Confirm Action")
                 .setMessage("Are you sure you want to " + (boulder.getIsActive() ? "deactivate" : "activate") + " " + boulder.getName() + "?")
                 .setPositiveButton("Yes", (dialog, which) -> {
-                    // Toggle isActive status
                     boolean newStatus = !boulder.getIsActive();
                     boulder.setIsActive(newStatus);
 
-                    // Update database
+                    // Update database accordingly
                     if (newStatus) {
                         dbHelper.updateBoulderStatus1(boulder.getName());
                         Log.d("Dev_Adapter", "Boulder " + boulder.getName() + " set to active");
@@ -197,7 +198,7 @@ public class Dev_Adapter extends RecyclerView.Adapter<Dev_Adapter.BoulderViewHol
                         Toast.makeText(view.getContext(), boulder.getName() + " is now inActive", Toast.LENGTH_SHORT).show();
                     }
 
-                    notifyItemChanged(position);
+                    notifyItemChanged(position); // Refresh after status change
                 })
                 .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                 .show();

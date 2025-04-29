@@ -24,41 +24,43 @@ public class Developer_Mode extends AppCompatActivity {
     DatabaseHelper dbHelper;
     SQLiteDatabase db;
 
-    //method to retrieve all data from the database
+    // Retrieves all boulders from the database into a list
     public ArrayList<Boulder> getAllRecords() {
         String name, address, rating;
         int isActive, isDone;
-        byte[] imageBytes; // For storing image as byte array
+        byte[] imageBytes;
+
         db = dbHelper.getReadableDatabase();
         ArrayList<Boulder> list = new ArrayList<>();
         Cursor cursor = db.query(DatabaseHelper.TABLE_LOCATIONS, null, null, null, null, null, null);
+
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                //gets the index for each column
+                // Get column indexes
                 int indexName = cursor.getColumnIndex(DatabaseHelper.COLUMN_NAME);
                 int indexAddress = cursor.getColumnIndex(DatabaseHelper.COLUMN_ADDRESS);
                 int indexRating = cursor.getColumnIndex(DatabaseHelper.COLUMN_RATING);
                 int indexIsActive = cursor.getColumnIndex(DatabaseHelper.COLUMN_IS_ACTIVE);
                 int indexIsDone = cursor.getColumnIndex(DatabaseHelper.COLUMN_IS_DONE);
-                int indexImage = cursor.getColumnIndex(DatabaseHelper.COLUMN_IMAGE); // Now a TEXT column
-                //checks if all the indexes are valid
+                int indexImage = cursor.getColumnIndex(DatabaseHelper.COLUMN_IMAGE);
+
+                // Only proceed if all required columns exist
                 if (indexName != -1 && indexAddress != -1 && indexRating != -1 && indexIsActive != -1 && indexImage != -1) {
                     name = cursor.getString(indexName);
                     address = cursor.getString(indexAddress);
                     rating = cursor.getString(indexRating);
                     isActive = cursor.getInt(indexIsActive);
                     isDone = cursor.getInt(indexIsDone);
-                    // Retrieve image as byte array
                     imageBytes = cursor.getBlob(indexImage);
 
-                    //puts the data in a new Boulder object
+                    // Create new Boulder object and add to list
                     Boulder record = new Boulder(name, address, rating, isActive, isDone, imageBytes);
-                    //adds the new object to the list
                     list.add(record);
                 }
             }
             cursor.close();
         }
+
         db.close();
         return list;
     }
@@ -70,6 +72,7 @@ public class Developer_Mode extends AppCompatActivity {
 
         dbHelper = new DatabaseHelper(this);
 
+        // Initialize views
         ibBack = findViewById(R.id.imageButton1);
         tvInActive = findViewById(R.id.textView);
         recyclerViewInActive = findViewById(R.id.recyclerViewInActive);
@@ -77,12 +80,14 @@ public class Developer_Mode extends AppCompatActivity {
         recyclerViewActive = findViewById(R.id.recyclerViewActive);
         recyclerViewActive.setLayoutManager(new LinearLayoutManager(this));
 
+        // Load data into both RecyclerViews
         loadRecyclerViews();
 
-        // sets listener for the image button
+        // Set click listener for the back button
         ibBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Navigate back to Locations activity
                 Intent intent = new Intent(Developer_Mode.this, Locations.class);
                 startActivity(intent);
             }
@@ -92,15 +97,15 @@ public class Developer_Mode extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh data when coming back to this activity
+        // Refresh RecyclerViews when returning to this activity
         loadRecyclerViews();
     }
 
     private void loadRecyclerViews() {
-        //creates a list of all the boulders
+        // Get all boulders from the database
         final ArrayList<Boulder> boulderList = getAllRecords();
 
-        //creates a list of all the NOT active boulders
+        // Filter inactive boulders
         ArrayList<Boulder> inActiveBoulders = new ArrayList<>();
         for (Boulder item : boulderList) {
             if (!item.getIsActive()) {
@@ -108,13 +113,14 @@ public class Developer_Mode extends AppCompatActivity {
             }
         }
 
+        // Show or hide the "Inactive" title based on data
         if (inActiveBoulders.isEmpty()) {
             tvInActive.setVisibility(View.GONE);
         } else {
             tvInActive.setVisibility(View.VISIBLE);
         }
 
-        //creates a list of all the active boulders
+        // Filter active boulders
         ArrayList<Boulder> activeBoulders = new ArrayList<>();
         for (Boulder item : boulderList) {
             if (item.getIsActive()) {
@@ -122,11 +128,10 @@ public class Developer_Mode extends AppCompatActivity {
             }
         }
 
-        //sends the data to the recycler view adapter
+        // Set adapters for each RecyclerView
         adapter = new Dev_Adapter(inActiveBoulders);
         recyclerViewInActive.setAdapter(adapter);
 
-        //sends the data to the recycler view adapter
         adapter2 = new Dev_Adapter(activeBoulders);
         recyclerViewActive.setAdapter(adapter2);
     }

@@ -55,16 +55,35 @@
         android:inputType="text"
         android:background="@drawable/background_text" />
 
-    <EditText
-        android:id="@+id/etAddress"
+    <!-- Address field with location button -->
+    <LinearLayout
         android:layout_width="297dp"
-        android:layout_height="50sp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:padding="10dp"
         android:layout_marginTop="20sp"
-        android:hint="Address/name of the nearby city"
-        android:inputType="text"
-        android:background="@drawable/background_text" />
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/etAddress"
+            android:layout_width="0dp"
+            android:layout_height="50sp"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:hint="Address/city"
+            android:inputType="text"
+            android:background="@drawable/background_text" />
+
+        <ImageButton
+            android:id="@+id/ibCurrentLocation"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:layout_marginStart="8dp"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            android:background="@drawable/background_text"
+            android:src="@drawable/icon_pin"
+            android:contentDescription="Get current location" />
+    </LinearLayout>
 
     <EditText
         android:id="@+id/etRating"

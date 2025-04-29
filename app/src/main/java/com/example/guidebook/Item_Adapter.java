@@ -23,9 +23,9 @@ import java.util.List;
 
 public class Item_Adapter extends RecyclerView.Adapter<Item_Adapter.BoulderViewHolder> {
 
-    private List<Boulder> boulderList;
+    private List<Boulder> boulderList; // List of all Boulder objects to display
 
-    // Constructor
+    // Constructor: receives the list of Boulders
     public Item_Adapter(List<Boulder> boulderList) {
         this.boulderList = boulderList;
     }
@@ -33,44 +33,49 @@ public class Item_Adapter extends RecyclerView.Adapter<Item_Adapter.BoulderViewH
     @NonNull
     @Override
     public BoulderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Inflate the item layout for each RecyclerView item
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_layout, parent, false); // Use the XML created earlier
+                .inflate(R.layout.item_layout, parent, false);
         return new BoulderViewHolder(view);
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull BoulderViewHolder holder, int position) {
-        Boulder currentBoulder = boulderList.get(position);
+        Boulder currentBoulder = boulderList.get(position); // Get the Boulder object for the current position
 
-        // Set name, address, and rating
+        // Set the Boulder name
         holder.nameTextView.setText(currentBoulder.getName());
+
+        // Set the address with a location emoji 📍
         holder.addressTextView.setText(currentBoulder.getAddress() + "\uD83D\uDCCD");
+
+        // Set the rating with a star emoji ⭐
         holder.ratingTextView.setText(currentBoulder.getRating() + "⭐");
 
-        // Convert byte[] to Bitmap and set it to ImageView
+        // Convert image bytes to a Bitmap and display it
         byte[] imageBytes = currentBoulder.getImageBytes();
         if (imageBytes != null && imageBytes.length > 0) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-            holder.imageView.setImageBitmap(bitmap);
+            holder.imageView.setImageBitmap(bitmap); // Set the image if available
         } else {
-            // Log the issue and set default image
+            // Log the issue and display a default placeholder image
             Log.d("Item_Adapter", "No image data available for Boulder: " + currentBoulder.getName());
-            holder.imageView.setImageResource(R.drawable.icon_empty_camera); // Default image if BLOB is null
+            holder.imageView.setImageResource(R.drawable.icon_empty_camera);
         }
 
-        // Set icon visibility based on whether the Boulder is completed or not
+        // Show or hide the "done" icon depending on the Boulder status
         if (currentBoulder.getIsDone()) {
-            holder.doneIcon.setVisibility(View.VISIBLE); // Show the icon if the boulder is completed
+            holder.doneIcon.setVisibility(View.VISIBLE);
         } else {
-            holder.doneIcon.setVisibility(View.GONE); // Hide the icon if not completed
+            holder.doneIcon.setVisibility(View.GONE);
         }
 
-        // Set the click listener on the itemView
+        // Handle click events on each item
         holder.itemView.setOnClickListener(v -> {
-            Boulder boulder = boulderList.get(position);
+            Boulder boulder = boulderList.get(position); // Get the clicked Boulder
 
-            // Create an instance of the fragment with Boulder details
+            // Create a new instance of BoulderFragment, passing the Boulder details
             BoulderFragment fragment = BoulderFragment.newInstance(
                     boulder.getName(),
                     boulder.getAddress(),
@@ -79,41 +84,40 @@ public class Item_Adapter extends RecyclerView.Adapter<Item_Adapter.BoulderViewH
                     boulder.getImageBytes()
             );
 
+            // Set a listener to update the Boulder status after changes inside the fragment
             fragment.setOnBoulderUpdatedListener((boulderName, isDone) -> {
                 for (Boulder b : boulderList) {
                     if (b.getName().equals(boulderName)) {
-                        b.setIsDone(isDone);
+                        b.setIsDone(isDone); // Update the Boulder status
                         break;
                     }
                 }
-                this.notifyDataSetChanged();
+                this.notifyDataSetChanged(); // Refresh the list after update
             });
 
-            // Begin the fragment transaction
+            // Start a fragment transaction to display the BoulderFragment
             FragmentTransaction transaction = ((AppCompatActivity) v.getContext())
                     .getSupportFragmentManager()
                     .beginTransaction();
 
-            // Add the fragment (instead of replace) if you want to stack it on top of the RecyclerView
+            // Add the fragment to the screen
             transaction.add(R.id.fragmentContainer, fragment);
-            transaction.addToBackStack(null); // Optional: allows back navigation
+            transaction.addToBackStack(null); // Allow user to navigate back
+            transaction.commit(); // Commit the transaction
 
-            // Commit the transaction to make the fragment appear
-            transaction.commit();
-
-            // Get the RecyclerView reference from the parent activity or fragment
-            RecyclerView recyclerView = ((AppCompatActivity) v.getContext()).findViewById(R.id.recyclerView); // Ensure this matches your RecyclerView's ID
+            // Hide the RecyclerView, Spinner, and Checkbox while the fragment is open
+            RecyclerView recyclerView = ((AppCompatActivity) v.getContext()).findViewById(R.id.recyclerView);
             Spinner spinner = ((AppCompatActivity) v.getContext()).findViewById(R.id.spinnerSort);
             CheckBox checkBox = ((AppCompatActivity) v.getContext()).findViewById(R.id.checkboxShowDone);
-            // Set the RecyclerView visibility to GONE
+
             if (recyclerView != null && spinner != null && checkBox != null) {
                 recyclerView.setVisibility(View.GONE);
                 spinner.setVisibility(View.GONE);
                 checkBox.setVisibility(View.GONE);
             }
-            // Get the FrameLayout reference
-            FrameLayout frameLayout = ((AppCompatActivity) v.getContext()).findViewById(R.id.fragmentContainer); // Ensure this matches your FrameLayout's ID
-            // Set the FrameLayout visibility to VISIBLE
+
+            // Show the FrameLayout that will hold the fragment
+            FrameLayout frameLayout = ((AppCompatActivity) v.getContext()).findViewById(R.id.fragmentContainer);
             if (frameLayout != null) {
                 frameLayout.setVisibility(View.VISIBLE);
             }
@@ -122,26 +126,28 @@ public class Item_Adapter extends RecyclerView.Adapter<Item_Adapter.BoulderViewH
 
     @Override
     public int getItemCount() {
-        return boulderList.size();
+        return boulderList.size(); // Return the total number of items to be displayed
     }
 
-    // ViewHolder class
+    // ViewHolder class to hold references to the views inside each item
     public static class BoulderViewHolder extends RecyclerView.ViewHolder {
         TextView nameTextView, addressTextView, ratingTextView;
         ImageView imageView, doneIcon;
 
         public BoulderViewHolder(@NonNull View itemView) {
             super(itemView);
-            nameTextView = itemView.findViewById(R.id.itemName);       // Reference to Name TextView
-            addressTextView = itemView.findViewById(R.id.itemAddress); // Reference to Address TextView
-            ratingTextView = itemView.findViewById(R.id.itemRating);  // Reference to Rating TextView
-            imageView = itemView.findViewById(R.id.itemImage);        // Reference to ImageView
-            doneIcon = itemView.findViewById(R.id.itemDoneIcon);      // Reference to DoneIcon
+            nameTextView = itemView.findViewById(R.id.itemName);       // Reference to the Boulder name TextView
+            addressTextView = itemView.findViewById(R.id.itemAddress); // Reference to the address TextView
+            ratingTextView = itemView.findViewById(R.id.itemRating);   // Reference to the rating TextView
+            imageView = itemView.findViewById(R.id.itemImage);         // Reference to the main image of the Boulder
+            doneIcon = itemView.findViewById(R.id.itemDoneIcon);       // Reference to the "done" checkmark icon
         }
     }
+
+    // Method to update the current list of Boulders and refresh the RecyclerView
     public void updateList(List<Boulder> newList) {
         boulderList.clear();
         boulderList.addAll(newList);
-        notifyDataSetChanged();
+        notifyDataSetChanged(); // Notify the adapter that data has changed
     }
 }

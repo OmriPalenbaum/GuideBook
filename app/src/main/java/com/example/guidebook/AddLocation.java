@@ -1,5 +1,6 @@
 package com.example.guidebook;
 
+
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -7,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,13 +27,30 @@ import androidx.core.app.ActivityCompat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.app.ProgressDialog;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import java.util.List;
+import java.util.Locale;
 public class AddLocation extends AppCompatActivity {
     EditText etName;
     EditText etAddress;
     EditText etRating;
     ImageView setCamera;
     ImageButton ibBack2;
+    ImageButton ibCurrentLocation; // Current location button
     Switch switchIsDone;
     Button btSubmit;
     Boulder newBoulder;
@@ -40,11 +59,16 @@ public class AddLocation extends AppCompatActivity {
     DatabaseHelper dbHelper = new DatabaseHelper(this);
     byte[] imageBytes; // To store the image as byte array
 
+    // For location services
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
+    private FusedLocationProviderClient fusedLocationClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_location);
 
+        // Initialize view elements
         ibBack2 = findViewById(R.id.imageButton2);
         etName = findViewById(R.id.etName);
         etAddress = findViewById(R.id.etAddress);
@@ -52,6 +76,19 @@ public class AddLocation extends AppCompatActivity {
         setCamera = findViewById(R.id.ivCamera);
         switchIsDone = findViewById(R.id.switchIsDone);
         btSubmit = findViewById(R.id.bt);
+        ibCurrentLocation = findViewById(R.id.ibCurrentLocation); // Initialize current location button
+
+        // Initialize the location client
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        // Setup current location button click listener
+        ibCurrentLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get current location when button is clicked
+                getCurrentLocation();
+            }
+        });
 
         // Register for Camera Result
         arCamera = registerForActivityResult(
@@ -119,6 +156,131 @@ public class AddLocation extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    //Gets the user's current location if permissions are granted or requests permissions if they aren't already granted
+    private void getCurrentLocation() {
+        // Check if location permissions are granted
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Request permissions if not granted
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
+            return;
+        }
+
+        // Show loading indicator
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Getting your location...");
+        progressDialog.show();
+
+        // Request current location
+        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        progressDialog.dismiss();
+                        if (location != null) {
+                            // Use Geocoder to get address from coordinates
+                            getAddressFromLocation(location);
+                        } else {
+                            Toast.makeText(AddLocation.this, "Couldn't get location. Please try again.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        progressDialog.dismiss();
+                        Toast.makeText(AddLocation.this, "Location error: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    //Converts latitude and longitude to a readable address in English
+    private void getAddressFromLocation(Location location) {
+        // Use English locale specifically for the Geocoder
+        Geocoder geocoder = new Geocoder(this, Locale.ENGLISH);
+
+        try {
+            // Get address from coordinates
+            List<Address> addresses = geocoder.getFromLocation(
+                    location.getLatitude(), location.getLongitude(), 1);
+
+            if (addresses != null && addresses.size() > 0) {
+                Address address = addresses.get(0);
+                StringBuilder addressText = new StringBuilder();
+
+                // Try to get street address
+                String street = address.getThoroughfare();
+                String streetNumber = address.getSubThoroughfare();
+
+                if (streetNumber != null && !streetNumber.isEmpty()) {
+                    addressText.append(streetNumber).append(" ");
+                }
+
+                if (street != null && !street.isEmpty()) {
+                    addressText.append(street).append(", ");
+                }
+
+                // Always include city name
+                String city = address.getLocality();
+                if (city != null && !city.isEmpty()) {
+                    addressText.append(city);
+                } else {
+                    // Fallback to subadmin area if city is not available
+                    String area = address.getSubAdminArea();
+                    if (area != null && !area.isEmpty()) {
+                        addressText.append(area);
+                    }
+                }
+
+                // Don't need to add Israel as country for local addresses
+                String country = address.getCountryName();
+                if (country != null && !country.isEmpty() && !country.equals("Israel")) {
+                    addressText.append(", ").append(country);
+                }
+
+                // Set the address in the EditText
+                etAddress.setText(addressText.toString());
+
+                // Log the full address details for debugging
+                Log.d("AddressInfo", "Full address: " + address.getAddressLine(0));
+            } else {
+                // If no address found, use coordinates
+                String coords = String.format(Locale.US, "%.6f, %.6f",
+                        location.getLatitude(), location.getLongitude());
+                etAddress.setText(coords);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            // If geocoding fails, use coordinates
+            String coords = String.format(Locale.US, "%.6f, %.6f",
+                    location.getLatitude(), location.getLongitude());
+            etAddress.setText(coords);
+            Toast.makeText(this, "Couldn't get address, using coordinates instead",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    //Handles the permission request result
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, get location
+                getCurrentLocation();
+            } else {
+                // Permission denied
+                Toast.makeText(this, "Location permission required to use this feature",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     // Show a dialog to choose between Camera or Gallery

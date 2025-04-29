@@ -121,11 +121,13 @@ public class BoulderFragment extends Fragment {
             }
         });
 
+        //Sets the listener om the imageButtonNav
         imageButtonNav.setOnClickListener(v -> openGoogleMapsNavigation(address));
 
-        // Create an instance of the WeatherApiService
+        //Create an instance of the WeatherApiService
         WeatherApiService weatherApi = RetrofitClient.getClient().create(WeatherApiService.class);
-        // Call the getWeather method to fetch weather data
+
+        //Call the getWeather method to fetch weather data
         weatherApi.getWeather(address, APIKEY, UNITS).enqueue(new Callback<WeatherResponse>() {
             @Override
             public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
@@ -148,16 +150,18 @@ public class BoulderFragment extends Fragment {
                     }
                 } else {
                     // If the response is not successful or contains no data, display an error message in textViewWeather1
-                    textViewWeather1.setText("address wasn't found in website");
+                    textViewWeather1.setText("address wasn't found");
                 }
             }
 
+            //Handles failure
             @Override
             public void onFailure(Call<WeatherResponse> call, Throwable t) {
                 textViewWeather1.setText("Error: " + t.getMessage());
             }
         });
 
+        //Sets listener on buttonBack
         buttonBack.setOnClickListener(v -> {
             // Get the RecyclerView reference from the parent activity
             RecyclerView recyclerView = getActivity().findViewById(R.id.recyclerView);
@@ -195,6 +199,7 @@ public class BoulderFragment extends Fragment {
         }
     }
 
+    //Method to call the Google Maps intent
     private void openGoogleMapsNavigation(String locationAddress) {
         // Encode the location name and Creates a URI for Google Maps navigation using the encoded destination
         String destination = Uri.encode(locationAddress + " עיר, Israel");
@@ -212,6 +217,7 @@ public class BoulderFragment extends Fragment {
         }
     }
 
+    //Interface for the listener
     public interface OnBoulderUpdatedListener {
         void onBoulderUpdated(String boulderName, boolean isDone);
     }
