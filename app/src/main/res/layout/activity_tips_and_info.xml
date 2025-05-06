@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
     android:background="@drawable/background_boulder">
 
-    <!-- Header: Back button and Title -->
+    <!-- Fixed Header -->
     <LinearLayout
+        android:id="@+id/headerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="20dp"
-        android:paddingEnd="38dp">
+        android:paddingEnd="38dp"
+        android:padding="16dp"
+        android:background="@android:color/transparent">
 
         <!-- Back Button -->
         <ImageButton
@@ -23,107 +23,213 @@
             android:scaleType="fitXY"
             android:background="@android:color/transparent"
             android:src="@drawable/icon_arrow_back"
-            android:contentDescription="@string/back_button_description"/>
+            android:contentDescription="@string/back_button_description" />
 
-        <!-- Title with Gravity centered -->
+        <!-- Title -->
         <TextView
             android:id="@+id/tvTipsAndInfo"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_weight="1"
+            android:gravity="center"
             android:fontFamily="@font/squares"
             android:text="Tips &amp; Info"
             android:textColor="#EDBB61"
             android:textSize="35sp"
-            android:textStyle="bold"/>
-
+            android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- What to Bring Section -->
-    <TextView
-        android:id="@+id/tvWhatToBring"
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:layout_below="@id/headerLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="What to Bring:"
-        android:textColor="#EDBB61"
-        android:textSize="20sp"
-        android:fontFamily="@font/squares"
-        android:textStyle="bold" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="4dp"
+        android:clipToPadding="false">
 
-    <!-- What to Bring Text -->
-    <TextView
-        android:id="@+id/whatToBringText"
-        android:padding="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="• Climbing shoes\n• Chalk bag\n• Crash pad\n• Comfortable clothing\n• Water and snacks\n• First aid kit"
-        android:textColor="#EDBB61"
-        android:textSize="16sp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/background_text"
-        android:fontFamily="@font/montserrat" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <!-- How to Prepare Section -->
-    <TextView
-        android:id="@+id/tvHowToPrepare"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="How to Prepare:"
-        android:textColor="#EDBB61"
-        android:textSize="20sp"
-        android:fontFamily="@font/squares"
-        android:textStyle="bold" />
+            <!-- Sections Below -->
 
-    <!-- How to Prepare Text -->
-    <TextView
-        android:id="@+id/howToPrepareText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="• Warm up properly before starting\n• Know your limits and avoid risky moves\n• Choose problems that match your skill level\n• Bring a spotter for safety\n• Learn basic climbing techniques"
-        android:textColor="#EDBB61"
-        android:textSize="16sp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/background_text"
-        android:padding="8dp"
-        android:fontFamily="@font/montserrat" />
+            <!-- What to Bring -->
+            <TextView
+                android:id="@+id/tvWhatToBring"
+                android:background="#994B3621"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="What to Bring▼"
+                android:textColor="#EDBB61"
+                android:textSize="20sp"
+                android:fontFamily="@font/squares"
+                android:textStyle="bold" />
 
-    <!-- What to Expect Section -->
-    <TextView
-        android:id="@+id/tvWhatToExpect"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="What to Expect:"
-        android:textColor="#EDBB61"
-        android:textSize="20sp"
-        android:fontFamily="@font/squares"
-        android:textStyle="bold" />
+            <TextView
+                android:id="@+id/whatToBringText"
+                android:padding="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Climbing shoes\n• Chalk bag\n• Crash pad\n• Comfortable clothing\n• Water and snacks\n• First aid kit"
+                android:textColor="#EDBB61"
+                android:textSize="16sp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/background_text"
+                android:fontFamily="@font/montserrat"
+                android:visibility="gone" />
 
-    <!-- What to Expect Text -->
-    <TextView
-        android:id="@+id/whatToExpectText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="• Bouldering can be tough on your body, so expect some soreness\n• The outdoors can be unpredictable—weather can change quickly\n• Expect a lot of trial and error while finding your rhythm\n• There will be moments of frustration, but keep pushing through!"
-        android:textColor="#EDBB61"
-        android:textSize="16sp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/background_text"
-        android:padding="8dp"
-        android:fontFamily="@font/montserrat" />
-</LinearLayout>
+            <!-- How to Prepare -->
+            <TextView
+                android:id="@+id/tvHowToPrepare"
+                android:background="#994B3621"
+                android:layout_width="wrap_content"                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="How to Prepare▼"
+                android:textColor="#EDBB61"
+                android:textSize="20sp"
+                android:fontFamily="@font/squares"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/howToPrepareText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Warm up properly before starting\n• Know your limits and avoid risky moves\n• Choose problems that match your skill level\n• Bring a spotter for safety\n• Learn basic climbing techniques"
+                android:textColor="#EDBB61"
+                android:textSize="16sp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/background_text"
+                android:padding="8dp"
+                android:fontFamily="@font/montserrat"
+                android:visibility="gone" />
+
+            <!-- What to Expect -->
+            <TextView
+                android:id="@+id/tvWhatToExpect"
+                android:background="#994B3621"
+                android:layout_width="wrap_content"                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="What to Expect▼"
+                android:textColor="#EDBB61"
+                android:textSize="20sp"
+                android:fontFamily="@font/squares"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/whatToExpectText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Bouldering can be tough on your body, so expect some soreness\n• The outdoors can be unpredictable—weather can change quickly\n• Expect a lot of trial and error while finding your rhythm\n• There will be moments of frustration, but keep pushing through!"
+                android:textColor="#EDBB61"
+                android:textSize="16sp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/background_text"
+                android:padding="8dp"
+                android:fontFamily="@font/montserrat"
+                android:visibility="gone" />
+
+            <!-- How to Stay Safe -->
+            <TextView
+                android:id="@+id/tvHowToStaySafe"
+                android:background="#994B3621"
+                android:layout_width="wrap_content"                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="How to Stay Safe▼"
+                android:textColor="#EDBB61"
+                android:textSize="20sp"
+                android:fontFamily="@font/squares"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/howToStaySafeText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Always use a spotter when bouldering.\n• Be aware of your surroundings and other climbers.\n• Don't attempt problems that are beyond your current skill level.\n• Wear appropriate footwear and gear.\n• Stay hydrated and take breaks to avoid fatigue."
+                android:textColor="#EDBB61"
+                android:textSize="16sp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/background_text"
+                android:padding="8dp"
+                android:fontFamily="@font/montserrat"
+                android:visibility="gone" />
+
+
+            <!-- Types of Grips -->
+            <TextView
+                android:id="@+id/tvTypesOfGrips"
+                android:background="#994B3621"
+                android:layout_width="wrap_content"                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="Types of Grips▼"
+                android:textColor="#EDBB61"
+                android:textSize="20sp"
+                android:fontFamily="@font/squares"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/typesOfGripsText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Jug: A large, easy-to-hold grip.\n• Pinch: Requires pinching the hold between your thumb and fingers.\n• Sloper: A rounded hold that relies on palm friction.\n• Crimp: A small hold where fingers are bent at a sharp angle.\n• Pocket: A hold with a hole for one or more fingers.\n• Mono: A type of pocket that fits only one finger.\n• Hand/Foot Jam: Inserting your hand or foot into a crack and twisting to create friction."
+                android:textColor="#EDBB61"
+                android:textSize="16sp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/background_text"
+                android:padding="8dp"
+                android:fontFamily="@font/montserrat"
+                android:visibility="gone" />
+
+            <!-- Types of Climbing -->
+            <TextView
+                android:id="@+id/tvTypesOfClimbing"
+                android:background="#994B3621"
+                android:layout_width="wrap_content"                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="Types of Climbing▼"
+                android:textColor="#EDBB61"
+                android:textSize="20sp"
+                android:fontFamily="@font/squares"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/typesOfClimbingText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Lead: Climbers ascend a route while clipping into fixed anchors.\n• Bouldering: Shorter climbs without ropes, focused on strength and technique.\n• Speed: Competitive climbing where the goal is to complete the route in the shortest time."
+                android:textColor="#EDBB61"
+                android:textSize="16sp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/background_text"
+                android:padding="8dp"
+                android:fontFamily="@font/montserrat"
+                android:visibility="gone" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
+
