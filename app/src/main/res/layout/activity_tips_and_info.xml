@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@drawable/background_boulder"
-    tools:context=".TipsAndInfo">
+    android:background="@drawable/background_boulder">
 
     <!-- Header: Back button and Title -->
     <LinearLayout
@@ -45,6 +42,7 @@
 
     <!-- What to Bring Section -->
     <TextView
+        android:id="@+id/tvWhatToBring"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -56,7 +54,9 @@
         android:fontFamily="@font/squares"
         android:textStyle="bold" />
 
+    <!-- What to Bring Text -->
     <TextView
+        android:id="@+id/whatToBringText"
         android:padding="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -71,6 +71,7 @@
 
     <!-- How to Prepare Section -->
     <TextView
+        android:id="@+id/tvHowToPrepare"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -82,7 +83,9 @@
         android:fontFamily="@font/squares"
         android:textStyle="bold" />
 
+    <!-- How to Prepare Text -->
     <TextView
+        android:id="@+id/howToPrepareText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="• Warm up properly before starting\n• Know your limits and avoid risky moves\n• Choose problems that match your skill level\n• Bring a spotter for safety\n• Learn basic climbing techniques"
@@ -97,6 +100,7 @@
 
     <!-- What to Expect Section -->
     <TextView
+        android:id="@+id/tvWhatToExpect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -108,7 +112,9 @@
         android:fontFamily="@font/squares"
         android:textStyle="bold" />
 
+    <!-- What to Expect Text -->
     <TextView
+        android:id="@+id/whatToExpectText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="• Bouldering can be tough on your body, so expect some soreness\n• The outdoors can be unpredictable—weather can change quickly\n• Expect a lot of trial and error while finding your rhythm\n• There will be moments of frustration, but keep pushing through!"
@@ -120,5 +126,4 @@
         android:background="@drawable/background_text"
         android:padding="8dp"
         android:fontFamily="@font/montserrat" />
-
 </LinearLayout>

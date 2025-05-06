@@ -38,7 +38,6 @@ public class BoulderFragment extends Fragment {
     private boolean isDone;
     private byte[] imageBytes; // Byte array for the image
     private OnBoulderUpdatedListener listener;
-
     public void setOnBoulderUpdatedListener(OnBoulderUpdatedListener listener) {
         this.listener = listener;
     }
@@ -87,6 +86,7 @@ public class BoulderFragment extends Fragment {
         ImageView imageBoulder = view.findViewById(R.id.imageViewBoulder);
         ImageButton icon = view.findViewById(R.id.buttonClimberDone);
         ImageButton buttonBack = view.findViewById(R.id.buttonBack);
+        TextView textViewClimbedHint = view.findViewById(R.id.textViewClimbedHint);
 
         textViewName.setText(name);
         textViewAddress.setText("Address: " + address);
@@ -103,23 +103,27 @@ public class BoulderFragment extends Fragment {
         // Set the icon with transparency based on the initial state of isDone
         setBoulderIcon(icon, isDone);
 
+        // Set the text based on the initial state of isDone
+        textViewClimbedHint.setVisibility(isDone ? View.INVISIBLE : View.VISIBLE);
+
         // Set onClickListener for the icon to toggle isDone state
         icon.setOnClickListener(v -> {
-            // Toggle the isDone state
             isDone = !isDone;
-
-            // Update the icon with new transparency based on the updated isDone state
             setBoulderIcon(icon, isDone);
 
-            // Update the database with the new isDone state
+            // Update database
             DatabaseHelper dbHelper = new DatabaseHelper(requireContext());
             dbHelper.updateIsDone(name, isDone);
 
-            // Notify the listener about the change
+            // Update text visibility
+            textViewClimbedHint.setVisibility(isDone ? View.INVISIBLE : View.VISIBLE);
+
+            // Notify listener
             if (listener != null) {
                 listener.onBoulderUpdated(name, isDone);
             }
         });
+
 
         //Sets the listener om the imageButtonNav
         imageButtonNav.setOnClickListener(v -> openGoogleMapsNavigation(address));
@@ -221,4 +225,5 @@ public class BoulderFragment extends Fragment {
     public interface OnBoulderUpdatedListener {
         void onBoulderUpdated(String boulderName, boolean isDone);
     }
+
 }
