@@ -118,7 +118,6 @@
         android:checked="true"
         android:layout_marginTop="16dp" />
 
-
     <!-- Submit Button -->
     <Button
         android:id="@+id/bt"

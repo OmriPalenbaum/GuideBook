@@ -2,10 +2,13 @@ package com.example.guidebook;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.graphics.Paint;
+import android.widget.Toast;
 
 public class TipsAndInfo extends AppCompatActivity {
 
@@ -41,6 +44,9 @@ public class TipsAndInfo extends AppCompatActivity {
         howToStaySafeText = findViewById(R.id.howToStaySafeText);
         typesOfGripsText = findViewById(R.id.typesOfGripsText);
         typesOfClimbingText = findViewById(R.id.typesOfClimbingText);
+        TextView federationLink = findViewById(R.id.tvFederationWebsite);
+        TextView contactUs = findViewById(R.id.tvContactUs);
+        TextView emailUs = findViewById(R.id.tvEmailUs);
 
         // Set an OnClickListener to handle the back button click
         ibBack.setOnClickListener(new View.OnClickListener() {
@@ -137,6 +143,33 @@ public class TipsAndInfo extends AppCompatActivity {
             }
         });
 
+        federationLink.setPaintFlags(federationLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        emailUs.setPaintFlags(emailUs.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        contactUs.setPaintFlags(contactUs.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+        // link to the ILCC site
+        federationLink.setOnClickListener(v -> {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://ilca.org.il/rock-3/"));
+            startActivity(browserIntent);
+        });
+
+        // open Email with the address and content
+        emailUs.setOnClickListener(v -> {
+            Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+            emailIntent.setData(Uri.parse("mailto:omri5455@gmail.com"));
+            try {
+                startActivity(Intent.createChooser(emailIntent, "Send email using..."));
+            } catch (android.content.ActivityNotFoundException ex) {
+                Toast.makeText(this, "No email clients installed on your device.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // open phone app with the number
+        contactUs.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:0509656522"));
+            startActivity(intent);
+        });
     }
 }
 

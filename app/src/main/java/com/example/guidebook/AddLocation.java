@@ -42,6 +42,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.List;
 import java.util.Locale;
 public class AddLocation extends AppCompatActivity {
@@ -150,9 +152,17 @@ public class AddLocation extends AppCompatActivity {
                 // Save the Boulder to the database
                 int test = saveBoulderData();
                 if (test == 1) {
-                    Toast.makeText(AddLocation.this, "Data submitted successfully", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(AddLocation.this, Locations.class);
-                    startActivity(intent);
+                    //shows a dialog to explain how the submission works
+                    new AlertDialog.Builder(AddLocation.this)
+                            .setTitle("Submission Received")
+                            .setMessage("Your boulder information has been submitted and is now awaiting approval from our team. \nThis process typically takes about one week. \nIf more than a week has passed, feel free to contact us via the Tips & Info page.")
+                            .setCancelable(false)
+                            .setPositiveButton("OK", (dialog, which) -> {
+                                // opens the locations page after clicking OK
+                                Intent intent = new Intent(AddLocation.this, Locations.class);
+                                startActivity(intent);
+                            })
+                            .show();
                 }
             }
         });
