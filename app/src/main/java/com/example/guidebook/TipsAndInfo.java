@@ -143,6 +143,7 @@ public class TipsAndInfo extends AppCompatActivity {
             }
         });
 
+        // puts an under score under the links
         federationLink.setPaintFlags(federationLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         emailUs.setPaintFlags(emailUs.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         contactUs.setPaintFlags(contactUs.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -172,4 +173,3 @@ public class TipsAndInfo extends AppCompatActivity {
         });
     }
 }
-

@@ -225,5 +225,4 @@ public class BoulderFragment extends Fragment {
     public interface OnBoulderUpdatedListener {
         void onBoulderUpdated(String boulderName, boolean isDone);
     }
-
 }

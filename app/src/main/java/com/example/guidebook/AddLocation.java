@@ -156,7 +156,7 @@ public class AddLocation extends AppCompatActivity {
                     new AlertDialog.Builder(AddLocation.this)
                             .setTitle("Submission Received")
                             .setMessage("Your boulder information has been submitted and is now awaiting approval from our team. \nThis process typically takes about one week. \nIf more than a week has passed, feel free to contact us via the Tips & Info page.")
-                            .setCancelable(false)
+                            .setCancelable(false) // the user can't close the dialog by pressing outside, only with the OK button.
                             .setPositiveButton("OK", (dialog, which) -> {
                                 // opens the locations page after clicking OK
                                 Intent intent = new Intent(AddLocation.this, Locations.class);
